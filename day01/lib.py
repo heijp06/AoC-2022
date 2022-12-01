@@ -1,28 +1,25 @@
 def part1(rows: list[str]) -> int:
-    maximum = 0
-    total = 0
-    for row in rows:
-        if row:
-            total += int(row)
-            continue
-        if total > maximum:
-            maximum = total
-        total = 0
-    if total > maximum:
-        maximum = total
-    return maximum
+    calories = get_calories(rows)
+    return calories[0]
 
 
 def part2(rows: list[str]) -> int:
-    elves = []
+    calories = get_calories(rows)
+    return sum(calories[:3])
+
+
+def get_calories(rows: list[str]) -> list[int]:
+    calories = []
     total = 0
+
     for row in rows:
         if row:
             total += int(row)
             continue
-        elves.append(total)
+        calories.append(total)
         total = 0
-    elves.append(total)
-    elves.sort(reverse=True)
-    return sum(elves[:3])
 
+    if total:
+        calories.append(total)
+
+    return sorted(calories, reverse=True)
