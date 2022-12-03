@@ -8,18 +8,18 @@ def part2(rows: list[str]) -> int:
 
 def get_item(row: str) -> str:
     compartment_size = len(row) // 2
-    compartment1 = set(row[:compartment_size])
-    compartment2 = set(row[compartment_size:])
-    in_both = compartment1.intersection(compartment2)
-    return get_single(in_both)
+    return get_shared_element([row[:compartment_size], row[compartment_size:]])
 
 
 def get_badge(rows: list[str]) -> str:
-    in_all = set.intersection(*map(set, rows))  # type: ignore
-    return get_single(in_all)
+    return get_shared_element(rows)
 
 
-def get_single(intersection):
+def get_shared_element(rows: list[str]) -> str:
+    return get_single(set.intersection(*map(set, rows)))  # type: ignore
+
+
+def get_single(intersection: set[str]) -> str:
     return next(iter(intersection))
 
 
