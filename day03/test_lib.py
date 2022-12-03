@@ -21,7 +21,7 @@ def test_part2():
 
 
 @pytest.mark.parametrize("rucksack,item", data)
-def test_get_item(rucksack: str, item: str) -> None:
+def test_get_item(rucksack: str, item: str):
     assert get_item(rucksack) == item
 
 

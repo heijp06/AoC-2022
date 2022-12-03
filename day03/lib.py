@@ -15,7 +15,7 @@ def get_item(row: str) -> str:
 
 
 def get_badge(rows: list[str]) -> str:
-    in_all = set.intersection(*map(set, rows))
+    in_all = set.intersection(*map(set, rows))  # type: ignore
     return get_single(in_all)
 
 
