@@ -1,4 +1,3 @@
-import pytest
 from lib import part1, part2
 
 
