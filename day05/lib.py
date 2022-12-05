@@ -21,7 +21,13 @@ def part1(rows: list[str]) -> int:
 
 
 def part2(rows: list[str]) -> int:
-    pass
+    stacks = parse_stacks(rows)
+    steps = parse_steps(rows)
+    for step in steps:
+        crates = stacks[step.start - 1][-step.repeat:]
+        stacks[step.end - 1] += crates
+        stacks[step.start - 1] = stacks[step.start - 1][:-step.repeat]
+    return "".join(stack[-1] for stack in stacks)
 
 
 def parse_stacks(rows: list[str]) -> list[Stack]:

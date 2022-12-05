@@ -7,7 +7,7 @@ def test_part1():
 
 
 def test_part2():
-    pass
+    assert part2(rows) == "MCD"
 
 
 def test_parse_stacks():
