@@ -1,4 +1,3 @@
-import pytest
 from lib import Step, parse_stacks, parse_steps, part1, part2
 
 
