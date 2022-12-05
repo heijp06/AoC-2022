@@ -12,6 +12,12 @@ class Step(NamedTuple):
 
 def part1(rows: list[str]) -> int:
     stacks = parse_stacks(rows)
+    steps = parse_steps(rows)
+    for step in steps:
+        for _ in range(step.repeat):
+            crate = stacks[step.start - 1].pop()
+            stacks[step.end - 1].append(crate)
+    return "".join(stack[-1] for stack in stacks)
 
 
 def part2(rows: list[str]) -> int:
