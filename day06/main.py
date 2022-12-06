@@ -1,13 +1,10 @@
-import csv
 import pyperclip    # type: ignore
 from lib import part1, part2
 
 
-def read_rows(**kwargs):
+def read_data():
     with open('data.txt', newline='') as csv_file:
-        # return csv.reader(csv_file, **kwargs)
         return csv_file.read().strip()
-        # return csv_file.read().splitlines()
 
 
 def clip(x):
@@ -16,12 +13,11 @@ def clip(x):
     pyperclip.copy(x)
 
 
-# rows = [row for row in read_rows()]
-rows = read_rows()
-x = part1(rows)
+data = read_data()
+x = part1(data)
 print(f"Part 1: {x}")
 clip(x)
 
-x = part2(rows)
+x = part2(data)
 print(f"Part 2: {x}")
 clip(x)
