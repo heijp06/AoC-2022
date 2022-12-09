@@ -45,7 +45,6 @@ def move(
         tail_x += delta_x
         tail_y += delta_y
         positions.add((tail_x, tail_y))
-        print(f"{head_x, head_y}, {tail_x, tail_y}")
     return (head_x, head_y), (tail_x, tail_y)
 
 
