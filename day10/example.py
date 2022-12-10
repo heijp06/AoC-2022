@@ -147,7 +147,7 @@ instructions = [
     "noop"
 ]
 
-sum_of_signal_strengths = 13140
+SUM_OF_SIGNAL_STRENGTHS = 13140
 
 crt = [
     "##..##..##..##..##..##..##..##..##..##..",

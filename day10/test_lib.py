@@ -1,9 +1,9 @@
-from example import crt, instructions, sum_of_signal_strengths
+from example import crt, instructions, SUM_OF_SIGNAL_STRENGTHS
 from lib import part1, part2
 
 
 def test_part1():
-    assert part1(instructions) == sum_of_signal_strengths
+    assert part1(instructions) == SUM_OF_SIGNAL_STRENGTHS
 
 
 def test_part2():
