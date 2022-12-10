@@ -8,12 +8,12 @@ def read_rows(**kwargs):
     with open(get_data_path(), newline='') as csv_file:
         return csv_file.read().splitlines()
 
+
 def get_data_path() -> str:
     path = getcwd()
     day = basename(path)
     path = dirname(path)
-    year = basename(path)
-    return join(path, "data", year, day, 'data.txt')
+    return join(path, "data", day, 'data.txt')
 
 
 def clip(x):
