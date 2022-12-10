@@ -13,7 +13,7 @@ def get_data_path() -> str:
     path = getcwd()
     day = basename(path)
     path = dirname(path)
-    return join(path, "data", day, 'data.txt')
+    return join(path, "data", day + '.txt')
 
 
 def clip(x):

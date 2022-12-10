@@ -4,7 +4,7 @@ from lib import part1, part2
 
 
 def read_rows(**kwargs):
-    with open('..\\data\\day08\\data.txt', newline='') as csv_file:
+    with open('..\\data\\day08.txt', newline='') as csv_file:
         # return list(csv.reader(csv_file, **kwargs))
         # return csv_file.read().strip()
         return csv_file.read().splitlines()
