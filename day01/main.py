@@ -12,8 +12,7 @@ def read_rows(**kwargs):
 def get_data_path() -> str:
     path = getcwd()
     day = basename(path)
-    path = dirname(path)
-    return join(path, "data", day + '.txt')
+    return join(dirname(path), "data", f'{day}.txt')
 
 
 def clip(x):
