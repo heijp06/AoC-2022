@@ -1,5 +1,5 @@
 import pytest
-from example import example
+from example import crt, example
 from lib import part1, part2
 
 
@@ -8,4 +8,4 @@ def test_part1():
 
 
 def test_part2():
-    pass
+    assert part2(example) == crt

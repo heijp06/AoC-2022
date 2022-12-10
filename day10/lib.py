@@ -7,5 +7,7 @@ def part1(rows: list[str]) -> int:
     return device.sum_of_signal_strengths
 
 
-def part2(rows: list[str]) -> int:
-    pass
+def part2(rows: list[str]) -> list[str]:
+    device = Device()
+    device.execute(rows)
+    return device.crt

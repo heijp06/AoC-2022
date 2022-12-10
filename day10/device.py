@@ -3,6 +3,7 @@ class Device:
         self.x_register = 1
         self.cycle = 1
         self.sum_of_signal_strengths = 0
+        self.crt = [" " * 40 for _ in range(6)]
 
     def execute(self, instructions: list[str]) -> None:
         for instruction in instructions:
@@ -14,7 +15,19 @@ class Device:
                     self.tick()
                     self.x_register += int(value)
 
-    def tick(self):
+    def tick(self) -> None:
         if self.cycle % 40 == 20:
             self.sum_of_signal_strengths += self.cycle * self.x_register
+        self.draw()
         self.cycle += 1
+
+    def draw(self) -> None:
+        index = self.cycle - 1
+        row = index // 40
+        column = index % 40
+        pixel = "#" if abs(self.x_register - column) < 2 else "."
+        self.write_pixel(pixel, row, column)
+
+    def write_pixel(self, pixel, row, column):
+        line = self.crt[row]
+        self.crt[row] = line[:column] + pixel + line[column + 1:]
