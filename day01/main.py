@@ -1,10 +1,19 @@
 import pyperclip    # type: ignore
+from os import getcwd
+from os.path import basename, dirname, join
 from lib import part1, part2
 
 
 def read_rows(**kwargs):
-    with open('data.txt', newline='') as csv_file:
+    with open(get_data_path(), newline='') as csv_file:
         return csv_file.read().splitlines()
+
+def get_data_path() -> str:
+    path = getcwd()
+    day = basename(path)
+    path = dirname(path)
+    year = basename(path)
+    return join(path, "data", year, day, 'data.txt')
 
 
 def clip(x):
