@@ -1,4 +1,4 @@
-example = [
+instructions = [
     "addx 15",
     "addx -11",
     "addx 6",
@@ -146,6 +146,8 @@ example = [
     "noop",
     "noop"
 ]
+
+sum_of_signal_strengths = 13140
 
 crt = [
     "##..##..##..##..##..##..##..##..##..##..",
