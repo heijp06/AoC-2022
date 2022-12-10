@@ -26,8 +26,7 @@ class Device:
         row = index // 40
         column = index % 40
         pixel = "#" if abs(self.x_register - column) < 2 else "."
-        self.write_pixel(pixel, row, column)
+        self.draw_pixel(pixel, row, column)
 
-    def write_pixel(self, pixel, row, column):
-        line = self.crt[row]
-        self.crt[row] = line[:column] + pixel + line[column + 1:]
+    def draw_pixel(self, pixel, row, column):
+        self.crt[row] = self.crt[row][:column] + pixel + self.crt[row][column + 1:]
