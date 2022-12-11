@@ -1,10 +1,9 @@
 from __future__ import annotations
 import re
 from functools import partial
-from typing import Callable, Optional
+from typing import Callable
 
 
-@staticmethod
 def parse(rows: list[str], divisor: int) -> list[Monkey]:
     monkeys: list[Monkey] = []
     for row in rows:
@@ -35,10 +34,10 @@ def parse(rows: list[str], divisor: int) -> list[Monkey]:
 class Monkey:
     def __init__(self, divisor: int) -> None:
         self.items: list[int] = []
-        self.operation: Optional[Callable[[int], int]] = None
+        self.operation: Callable[[int], int] = int
         self.modulus = 0
-        self.when_true: Optional[int] = None
-        self.when_false: Optional[int] = None
+        self.when_true: int = 0
+        self.when_false: int = 0
         self.business = 0
         self.divisor = divisor
 

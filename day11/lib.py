@@ -1,5 +1,5 @@
-from monkey import parse
 from math import prod
+from monkey import parse
 
 
 def part1(rows: list[str]) -> int:
@@ -10,12 +10,12 @@ def part2(rows: list[str]) -> int:
     return monkey_business(rows, 10000, 1)
 
 
-def monkey_business(rows: list[int], rounds: int, divisor: int) -> int:
+def monkey_business(rows: list[str], rounds: int, divisor: int) -> int:
     monkeys = parse(rows, divisor)
     modulus = prod(monkey.modulus for monkey in monkeys)
     for _ in range(rounds):
         for monkey in monkeys:
-            while (monkey.items):
+            while monkey.items:
                 index, item = monkey.inspect()
                 item %= modulus
                 monkeys[index].items.append(item)
