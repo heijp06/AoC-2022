@@ -1,4 +1,4 @@
-from math import prod
+from math import lcm
 from monkey import parse
 
 
@@ -12,7 +12,7 @@ def part2(rows: list[str]) -> int:
 
 def monkey_business(rows: list[str], rounds: int, divisor: int) -> int:
     monkeys = parse(rows, divisor)
-    modulus = prod(monkey.modulus for monkey in monkeys)
+    modulus = lcm(*(monkey.modulus for monkey in monkeys))
     for _ in range(rounds):
         for monkey in monkeys:
             while monkey.items:
