@@ -5,13 +5,13 @@ from typing import Callable, Optional
 
 
 @staticmethod
-def parse(rows: list[str]) -> list[Monkey]:
+def parse(rows: list[str], divisor: int) -> list[Monkey]:
     monkeys: list[Monkey] = []
     for row in rows:
         line = re.findall(r"[^:, ]+", row)
         match line:
             case ['Monkey', *_]:
-                monkey = Monkey()
+                monkey = Monkey(divisor)
                 monkeys.append(monkey)
             case ['Starting', 'items', *items]:
                 monkey.items = list(map(int, items))
@@ -24,7 +24,7 @@ def parse(rows: list[str]) -> list[Monkey]:
                     case ['+', value]:
                         monkey.operation = partial(monkey.add, int(value))
             case ['Test', 'divisible', 'by', value]:
-                monkey.divisor = int(value)
+                monkey.modulus = int(value)
             case ['If', 'true', 'throw', 'to', 'monkey', value]:
                 monkey.when_true = int(value)
             case ['If', 'false', 'throw', 'to', 'monkey', value]:
@@ -33,16 +33,17 @@ def parse(rows: list[str]) -> list[Monkey]:
 
 
 class Monkey:
-    def __init__(self) -> None:
+    def __init__(self, divisor: int) -> None:
         self.items: list[int] = []
         self.operation: Optional[Callable[[int], int]] = None
-        self.divisor = 0
+        self.modulus = 0
         self.when_true: Optional[int] = None
         self.when_false: Optional[int] = None
         self.business = 0
+        self.divisor = divisor
 
     def __repr__(self) -> str:
-        return f"[{self.items}, %{self.divisor} ? {self.when_true} : {self.when_false}]"
+        return f"[{self.items}, %{self.modulus} ? {self.when_true} : {self.when_false}]"
 
     def mul(self, argument: int, item: int) -> int:
         return argument * item
@@ -56,6 +57,6 @@ class Monkey:
     def inspect(self) -> tuple[int, int]:
         self.business += 1
         item = self.items.pop(0)
-        new_item = self.operation(item) // 3
-        new_monkey = self.when_false if new_item % self.divisor else self.when_true
+        new_item = self.operation(item) // self.divisor
+        new_monkey = self.when_false if new_item % self.modulus else self.when_true
         return new_monkey, new_item

@@ -28,4 +28,5 @@ monkeys = [
     "    If false: throw to monkey 1",
 ]
 
-business = 10605
+business1 = 10605
+business2 = 2713310158
