@@ -10,7 +10,7 @@ def parse(rows: list[str], divisor: int) -> list[Monkey]:
     for row in rows:
         line = re.findall(r"[^:, ]+", row)
         match line:
-            case ['Monkey', *_]:
+            case ['Monkey', _]:
                 monkey = Monkey(divisor)
                 monkeys.append(monkey)
             case ['Starting', 'items', *items]:
@@ -45,8 +45,8 @@ class Monkey:
     def __repr__(self) -> str:
         return f"[{self.items}, %{self.modulus} ? {self.when_true} : {self.when_false}]"
 
-    def mul(self, argument: int, item: int) -> int:
-        return argument * item
+    def mul(self, operand: int, item: int) -> int:
+        return operand * item
 
     def add(self, argument: int, item: int) -> int:
         return argument + item
