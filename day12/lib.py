@@ -1,30 +1,21 @@
-import itertools
-from collections import namedtuple
 from typing import Optional
-
-
-Grid = list[list[int]]
-Position = namedtuple("Position", "row,col")
+from grid import Grid, Position
 
 
 def part1(rows: list[str]) -> Optional[int]:
-    start, end, grid = parse(rows)
-    return find([start], end, grid)
+    grid = Grid(rows)
+    return find([grid.start], grid)
 
 
 def part2(rows: list[str]) -> Optional[int]:
-    _, end, grid = parse(rows)
-    height = len(grid)
-    width = len(grid[0])
-    starts = [Position(row, col) for row, col in itertools.product(
-        range(height), range(width)) if not grid[row][col]]
-    return find(starts, end, grid)
+    grid = Grid(rows)
+    starts = [position for position in grid.get_positions()
+              if not grid[position]]
+    return find(starts, grid)
 
 
-def find(starts: list[Position], end: Position, grid: Grid) -> Optional[int]:
-    height = len(grid)
-    width = len(grid[0])
-    if end in starts:
+def find(starts: list[Position], grid: Grid) -> Optional[int]:
+    if grid.end in starts:
         return 0
     positions = starts
     seen = set(starts)
@@ -34,37 +25,16 @@ def find(starts: list[Position], end: Position, grid: Grid) -> Optional[int]:
         for pos in positions:
             for delta in [Position(0, 1), Position(0, -1), Position(1, 0), Position(-1, 0)]:
                 new_pos = Position(pos.row + delta.row, pos.col + delta.col)
-                if (new_pos.row < 0 or new_pos.row >= height or
-                        new_pos.col < 0 or new_pos.col >= width):
+                if not grid.on_grid(new_pos):
                     continue
                 if new_pos in seen:
                     continue
-                if grid[new_pos.row][new_pos.col] - grid[pos.row][pos.col] > 1:
+                if grid[new_pos] - grid[pos] > 1:
                     continue
-                if new_pos == end:
+                if new_pos == grid.end:
                     return step
                 new_positions.append(new_pos)
                 seen.add(new_pos)
         step += 1
         positions = new_positions
     return None
-
-
-def parse(rows: list[str]) -> tuple[Position, Position, Grid]:
-    grid: Grid = []
-    start = Position(-1, -1)
-    end = Position(-1, -1)
-    for row, _ in enumerate(rows):
-        line: list[int] = []
-        grid.append(line)
-        for column, _ in enumerate(rows[0]):
-            letter = rows[row][column]
-            if letter == 'S':
-                line.append(0)
-                start = Position(row, column)
-            elif letter == 'E':
-                line.append(25)
-                end = Position(row, column)
-            else:
-                line.append(ord(letter) - ord('a'))
-    return start, end, grid
