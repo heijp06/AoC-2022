@@ -45,10 +45,6 @@ def part2(rows: list[str]) -> int:
     starts = [Position(row, col) for row, col in itertools.product(
         range(height), range(width)) if not grid[row][col]]
     return find(starts, end, grid)
-    #         length = find(Position(row, col), end, grid)
-    #         if length < best:
-    #             best = length
-    # return best
 
 
 def parse(rows: list[str]) -> tuple[Position, Position, Grid]:
