@@ -1,3 +1,4 @@
+import itertools
 from collections import namedtuple
 
 
@@ -7,12 +8,16 @@ Position = namedtuple("Position", "row,col")
 
 def part1(rows: list[str]) -> int:
     start, end, grid = parse(rows)
+    return find([start], end, grid)
+
+
+def find(starts, end, grid):
     height = len(grid)
     width = len(grid[0])
-    if start == end:
+    if end in starts:
         return 0
-    positions = [start]
-    seen = {start}
+    positions = starts
+    seen = set(starts)
     step = 1
     while True:
         new_positions: list[Position] = []
@@ -32,8 +37,18 @@ def part1(rows: list[str]) -> int:
         step += 1
         positions = new_positions
 
+
 def part2(rows: list[str]) -> int:
-    pass
+    _, end, grid = parse(rows)
+    height = len(grid)
+    width = len(grid[0])
+    starts = [Position(row, col) for row, col in itertools.product(
+        range(height), range(width)) if not grid[row][col]]
+    return find(starts, end, grid)
+    #         length = find(Position(row, col), end, grid)
+    #         if length < best:
+    #             best = length
+    # return best
 
 
 def parse(rows: list[str]) -> tuple[Position, Position, Grid]:

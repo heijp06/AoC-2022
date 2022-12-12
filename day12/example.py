@@ -7,3 +7,4 @@ rows = [
 ]
 
 STEPS1 = 31
+STEPS2 = 29
