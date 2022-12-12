@@ -19,7 +19,7 @@ def find(starts, end, grid):
     positions = starts
     seen = set(starts)
     step = 1
-    while True:
+    while positions:
         new_positions: list[Position] = []
         for pos in positions:
             for delta in [Position(0, 1), Position(0, -1), Position(1, 0), Position(-1, 0)]:
