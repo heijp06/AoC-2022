@@ -1,41 +1,38 @@
 from collections import namedtuple
 from functools import cmp_to_key
+from ast import literal_eval
+from typing import Any, Union
 
 LT = -1
 EQ = 0
 GT = 1
 
 Pair = namedtuple("Pair", "left,right")
+Packet = Union[int, list[Any]]
 
 
 def part1(rows: list[str]) -> int:
-    pairs = parse(rows)
-    count = 0
-    for index, pair in enumerate(pairs):
-        if compare(pair.left, pair.right) == LT:
-            count += index + 1
-    return count
+    pairs: list[Pair] = []
+    for index in range(0, len(rows), 3):
+        left = literal_eval(rows[index])
+        right = literal_eval(rows[index+1])
+        pairs.append(Pair(left, right))
+    return sum(
+        index + 1 for index, pair in enumerate(pairs)
+        if compare(pair.left, pair.right) == LT
+    )
 
 
 def part2(rows: list[str]) -> int:
-    packets = [eval(row) for row in rows if row]
-    packets += [[[2]], [[6]]]
-    packets.sort(key = cmp_to_key(compare))
-    index1 = 1 + packets.index([[2]])
-    index2 = 1 + packets.index([[6]])
-    return index1 * index2
+    packets = [literal_eval(row) for row in rows if row]
+    divider_packet1 = [[2]]
+    divider_packet2 = [[6]]
+    packets += [divider_packet1, divider_packet2]
+    packets.sort(key=cmp_to_key(compare))
+    return (packets.index(divider_packet1) + 1) * (packets.index(divider_packet2) + 1)
 
 
-def parse(rows: list[str]) -> list[Pair]:
-    pairs: list[Pair] = []
-    for index in range(0, len(rows), 3):
-        left = eval(rows[index])
-        right = eval(rows[index+1])
-        pairs.append(Pair(left, right))
-    return pairs
-
-
-def compare(left, right) -> int:
+def compare(left: Packet, right: Packet) -> int:
     if left == right:
         return EQ
     if isinstance(left, int):
@@ -44,9 +41,7 @@ def compare(left, right) -> int:
         return compare([left], right)
     if isinstance(right, int):
         return compare(left, [right])
-    if not left:
-        return LT if right else EQ
-    if not right:
-        return GT
-    result = compare(left[0], right[0])
-    return compare(left[1:], right[1:]) if result == EQ else result
+    if left and right:
+        result = compare(left[0], right[0])
+        return compare(left[1:], right[1:]) if result == EQ else result
+    return GT if left else LT
