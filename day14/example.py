@@ -4,4 +4,4 @@ example = [
 ]
 
 RESULT1 = 24
-RESULT2 = None
+RESULT2 = 93
