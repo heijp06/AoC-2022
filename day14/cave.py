@@ -39,6 +39,14 @@ def parse(rows: list[str]) -> Cave:
 
 class Cave:
     def __init__(self, rocks: set[Point], y_max: int) -> None:
-        self.stuff = rocks
+        self._stuff = rocks
         self.y_max = y_max
         self.start = Point(500, 0)
+
+    def add_sand(self, sand: Point) -> None:
+        if sand in self._stuff:
+            raise ValueError(sand)
+        self._stuff.add(sand)
+    
+    def is_blocked(self, point: Point) -> bool:
+        return point in self._stuff
