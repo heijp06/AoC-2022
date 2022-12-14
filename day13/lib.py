@@ -1,6 +1,5 @@
 from collections import namedtuple
 from functools import cmp_to_key
-from ast import literal_eval
 import re
 from typing import Any, Union
 
@@ -15,8 +14,8 @@ Packet = Union[int, list[Any]]
 def part1(rows: list[str]) -> int:
     pairs: list[Pair] = []
     for index in range(0, len(rows), 3):
-        left = literal_eval(rows[index])
-        right = literal_eval(rows[index+1])
+        left = parse(rows[index])
+        right = parse(rows[index+1])
         pairs.append(Pair(left, right))
     return sum(
         index + 1 for index, pair in enumerate(pairs)
@@ -25,7 +24,7 @@ def part1(rows: list[str]) -> int:
 
 
 def part2(rows: list[str]) -> int:
-    packets = [literal_eval(row) for row in rows if row]
+    packets = [parse(row) for row in rows if row]
     divider_packet1 = [[2]]
     divider_packet2 = [[6]]
     packets += [divider_packet1, divider_packet2]
@@ -49,22 +48,15 @@ def compare(left: Packet, right: Packet) -> int:
 
 
 def parse(row: str) -> Packet:
-    stack = []
-    packet = None
-    for token in re.findall(r"\[|]|\d+", row):
+    stack: list[list[Any]] = [[]]
+    for token in re.findall(r"\[|]|\d+", row)[1:-1]:
         match token:
             case "[":
-                if packet is None:
-                    packet = []
-                    stack.append(packet)
-                else:
-                    new = []
-                    stack[-1].append(new)
-                    stack.append(new)
+                packet: list[Packet] = []
+                stack[-1].append(packet)
+                stack.append(packet)
             case "]":
                 stack.pop()
             case value:
                 stack[-1].append(int(value))
-    return packet
-
-
+    return stack[0]
