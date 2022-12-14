@@ -49,4 +49,4 @@ class Cave:
         self._stuff.add(sand)
     
     def is_blocked(self, point: Point) -> bool:
-        return point in self._stuff
+        return point in self._stuff or point.y >= self.y_max + 2

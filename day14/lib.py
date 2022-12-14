@@ -18,7 +18,19 @@ def part1(rows: list[str]) -> int:
 
 
 def part2(rows: list[str]) -> int:
-    pass
+    cave = parse(rows)
+    count = 0
+    while True:
+        sand = cave.start
+        while True:
+            new_sand = fall(sand, cave)
+            if new_sand == cave.start:
+                return count + 1
+            if new_sand == sand:
+                cave.add_sand(sand)
+                count += 1
+                break
+            sand = new_sand
 
 
 def fall(sand: Point, cave: Cave) -> Point:
