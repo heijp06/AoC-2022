@@ -1,6 +1,7 @@
 from collections import namedtuple
 from functools import cmp_to_key
 from ast import literal_eval
+import re
 from typing import Any, Union
 
 LT = -1
@@ -45,3 +46,25 @@ def compare(left: Packet, right: Packet) -> int:
         result = compare(left[0], right[0])
         return compare(left[1:], right[1:]) if result == EQ else result
     return GT if left else LT
+
+
+def parse(row: str) -> Packet:
+    stack = []
+    packet = None
+    for token in re.findall(r"\[|]|\d+", row):
+        match token:
+            case "[":
+                if packet is None:
+                    packet = []
+                    stack.append(packet)
+                else:
+                    new = []
+                    stack[-1].append(new)
+                    stack.append(new)
+            case "]":
+                stack.pop()
+            case value:
+                stack[-1].append(int(value))
+    return packet
+
+
