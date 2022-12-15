@@ -15,5 +15,5 @@ def no_beacons(row: int, sensors: list[Sensor]):
     return len(visible) - len(beacons_on_row)
 
 
-def part2(rows: list[str]) -> int:
+def part2(rows: list[str], size: int = 4000000) -> int:
     pass

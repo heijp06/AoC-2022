@@ -9,7 +9,7 @@ def test_part1():
 
 
 def test_part2():
-    assert part2(example) == RESULT2
+    assert part2(example, 20) == RESULT2
 
 
 def test_visible_columns():
