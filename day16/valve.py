@@ -2,19 +2,21 @@ from __future__ import annotations
 import re
 
 
-def parse(rows: list[str]) -> Valve:
+def parse(rows: list[str]) -> tuple[Valve, list[int]]:
     valves: dict[str, Valve] = {}
+    rates = []
     for row in rows:
         result = re.match(
             r"Valve (.*) has flow rate=(\d+); tunnels? leads? to valves? (.*)", row)
         assert result is not None
         name = result[1]
         rate = int(result[2])
+        rates.append(rate)
         valve_names = re.split(r", ", result[3])
         valves[name] = Valve(name, rate, valve_names)
     valve_aa = valves["AA"]
     build_system(valve_aa, valves, set())
-    return valve_aa
+    return valve_aa, rates
 
 
 def build_system(valve: Valve, valves: dict[str, Valve], built: set[str]) -> None:
