@@ -2,11 +2,12 @@ from __future__ import annotations
 import re
 
 
-def parse(rows: list[int]) -> Valve:
+def parse(rows: list[str]) -> Valve:
     valves: dict[str, Valve] = {}
     for row in rows:
         result = re.match(
             r"Valve (.*) has flow rate=(\d+); tunnels? leads? to valves? (.*)", row)
+        assert result is not None
         name = result[1]
         rate = int(result[2])
         valve_names = re.split(r", ", result[3])
@@ -16,7 +17,7 @@ def parse(rows: list[int]) -> Valve:
     return valve_aa
 
 
-def build_system(valve: Valve, valves: dict[str, int], built: set[str]) -> None:
+def build_system(valve: Valve, valves: dict[str, Valve], built: set[str]) -> None:
     if valve.name in built:
         return
     built.add(valve.name)
