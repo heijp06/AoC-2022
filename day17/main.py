@@ -1,15 +1,13 @@
 from os import getcwd
 from os.path import basename, dirname, join
-import csv
 import pyperclip    # type: ignore
 from lib import part1, part2
+from example import example
 
 
-def read_rows(**kwargs):
+def read_row(**kwargs):
     with open(get_data_path(), encoding='ASCII', newline='') as csv_file:
-        # return list(csv.reader(csv_file, **kwargs))
-        # return csv_file.read().strip()
-        return csv_file.read().splitlines()
+        return csv_file.read().strip()
 
 
 def get_data_path() -> str:
@@ -24,11 +22,11 @@ def clip(data):
     pyperclip.copy(data)
 
 
-rows = [row for row in read_rows()]
-result1 = part1(rows)
+row = read_row()
+result1 = part1(row)
 print(f"Part 1: {result1}")
 clip(result1)
 
-result2 = part2(rows)
+result2 = part2(row)
 print(f"Part 2: {result2}")
 clip(result2)
