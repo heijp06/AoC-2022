@@ -2,6 +2,7 @@ from os import getcwd
 from os.path import basename, dirname, join
 import pyperclip    # type: ignore
 from lib import part1, part2
+from example import EXAMPLE
 
 
 def read_row():
@@ -26,6 +27,7 @@ result1 = part1(row)
 print(f"Part 1: {result1}")
 clip(result1)
 
+# result2 = part2(EXAMPLE)
 result2 = part2(row)
 print(f"Part 2: {result2}")
 clip(result2)

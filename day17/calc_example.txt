@@ -1,0 +1,8 @@
+- After 50 times the tower is 78 high.
+- Every 35 times the tower will be 53 higher.
+
+
+
+78 + (1000000000000 - 50) // 35 * 53 + rest((1000000000000 - 50) % 35)
+
+78 + (1000000000000 - 50) // 35 * 53
