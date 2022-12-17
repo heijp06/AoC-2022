@@ -12,7 +12,7 @@ example = [
 ]
 
 RESULT1 = 1651
-RESULT2 = None
+RESULT2 = 1707
 
 small = [
     "Valve AA has flow rate=0; tunnels lead to valves HH",

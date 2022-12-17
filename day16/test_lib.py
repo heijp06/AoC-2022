@@ -1,6 +1,7 @@
 import pytest
 from lib import get_max_pressure_left, part1, part2
 from example import RESULT1, RESULT2, SMALL1, example, small
+from valve import build_distance_table
 
 
 @pytest.mark.parametrize("rows,pressure", (
