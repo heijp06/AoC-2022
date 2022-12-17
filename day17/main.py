@@ -2,10 +2,9 @@ from os import getcwd
 from os.path import basename, dirname, join
 import pyperclip    # type: ignore
 from lib import part1, part2
-from example import example
 
 
-def read_row(**kwargs):
+def read_row():
     with open(get_data_path(), encoding='ASCII', newline='') as csv_file:
         return csv_file.read().strip()
 

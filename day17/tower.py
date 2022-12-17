@@ -45,7 +45,6 @@ class Tower:
             rock = new_rock
         self.tower |= rock
         self.height = max(point.y for point in self.tower)
-            
 
     def get_rock(self, x: int, y: int) -> Rock:
         rock = self.rocks[self.current_rock]
@@ -65,11 +64,11 @@ class Tower:
         if any(point.x <= 0 or point.x > Tower.WIDTH for point in new_rock):
             return rock
         return new_rock
-    
+
     def drop(self, rock: Rock) -> Rock:
         new_rock = self.move_rock(0, -1, rock)
         return rock if new_rock & self.tower else new_rock
-    
+
     def draw(self, rock: Rock) -> None:
         height = max(point.y for point in rock)
         for y in range(height, 0, -1):
