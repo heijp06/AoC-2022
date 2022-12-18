@@ -1,10 +1,14 @@
 import pytest
 from lib import part1, part2
-from example import RESULT1, RESULT2, example
+from example import RESULT1, RESULT2, RESULT_SMALL, example, small
 
 
-def test_part1():
-    assert part1(example) == RESULT1
+@pytest.mark.parametrize("rows,area", [
+    (small, RESULT_SMALL),
+    (example, RESULT1)
+])
+def test_part1(rows: list[str], area: int):
+    assert part1(rows) == area
 
 
 def test_part2():
