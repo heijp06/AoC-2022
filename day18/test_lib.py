@@ -29,11 +29,13 @@ def test_outside_air():
         if (x, y, z) != (1, 1, 1)
     }
 
+
 def test_trapped_air():
     cubes = [Cube(parse(row)) for row in example]
     grid = Grid(cubes)
     grid.find_trapped_air()
     assert grid.trapped_air == {Cube(Point(2, 2, 5))}
+
 
 def test_trapped_air2():
     cubes = [

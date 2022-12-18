@@ -26,7 +26,7 @@ class Point:
         if isinstance(shape, Point):
             return Point(self.x + shape.x, self.y + shape.y, self.z + shape.z)
         return shape + self
-    
+
     def __repr__(self) -> str:
         return repr(self._key())
 
@@ -50,7 +50,7 @@ class Side(Iterable):
 
     def __lt__(self, other: Side) -> bool:
         return self.points < other.points
-    
+
     def __repr__(self) -> str:
         return repr(self.points)
 
@@ -77,6 +77,6 @@ class Cube(Iterable):
 
     def __hash__(self) -> int:
         return hash(self.sides)
-    
+
     def __repr__(self) -> str:
         return repr(self.offset)

@@ -32,9 +32,9 @@ class Grid:
                         continue
                     self.assign(cube)
 
-    def assign(self, cube: Cube) -> None:
-        unknowns = {cube}
-        cubes = [cube]
+    def assign(self, unknown: Cube) -> None:
+        unknowns = {unknown}
+        cubes = [unknown]
         while cubes:
             new_cubes: list[Cube] = []
             for cube in cubes:
