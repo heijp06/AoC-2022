@@ -15,7 +15,7 @@ example = [
 ]
 
 RESULT1 = 64
-RESULT2 = None
+RESULT2 = 58
 
 small = [
     "1,1,1",
