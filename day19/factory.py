@@ -33,3 +33,16 @@ class Factory:
     def __init__(self, blueprint: Blueprint) -> None:
         self.blueprint = blueprint
         self.start_state = State(0, 0, 0, 0, 1, 0, 0, 0)
+        self.max_geodes = -1
+
+    def build(self) -> None:
+        self.states = [self.start_state]
+        self.seen = {self.start_state}
+        for _ in range(24):
+            self.new_states: list[State] = []
+            for state in self.states:
+                self.next_states(state)
+            self.states = self.new_states
+
+    def next_states(self, state: State) -> None:
+        pass
