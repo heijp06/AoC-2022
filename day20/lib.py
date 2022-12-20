@@ -1,24 +1,23 @@
 def part1(rows: list[str]) -> int:
-    values = [(index, int(row)) for index, row in enumerate(rows)]
-    return mix(values, 1)
+    return mix(rows, 1, 1)
 
 
 def part2(rows: list[str]) -> int:
-    values = [(index, 811589153 * int(row)) for index, row in enumerate(rows)]
-    return mix(values, 10)
+    return mix(rows, 811589153, 10)
 
 
-def mix(values: list[tuple[int, int]], repeat) -> int:
-    new_values = list(values)
+def mix(rows: list[str], key: int, repeat: int) -> int:
+    pairs = [(id, key * int(row)) for id, row in enumerate(rows)]
+    length = len(pairs)
+    new_pairs = list(pairs)
     for _ in range(repeat):
-        for key, value in values:
-            index = new_values.index((key, value))
-            new_values.remove((key, value))
-            new_index = (index + value) % (len(values) - 1)
-            if new_index == 0:
-                new_index = 0 if value >= 0 else (len(values) - 1)
-            new_values = new_values[:new_index] + \
-                [(key, value)] + new_values[new_index:]
-    result = [value for _, value in new_values]
+        for id, value in pairs:
+            index = new_pairs.index((id, value))
+            new_pairs.remove((id, value))
+            new_index = (index + value) % (length - 1)
+            if new_index == 0 and value < 0:
+                new_index = length - 1
+            new_pairs.insert(new_index, (id, value))
+    result = [value for _, value in new_pairs]
     index = result.index(0)
-    return sum(result[(index + offset) % len(result)] for offset in (1000, 2000, 3000))
+    return sum(result[(index + offset) % length] for offset in (1000, 2000, 3000))
