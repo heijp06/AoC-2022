@@ -30,7 +30,7 @@ class State(NamedTuple):
     obsidian_robots: int
     geode_robots: int
 
-    def update(self,
+    def update(self,  # pylint: disable=too-many-arguments
                time: Optional[int] = None,
                ore: Optional[int] = None,
                clay: Optional[int] = None,
@@ -61,6 +61,7 @@ class Factory:
         self.max_geodes = -1
         self.seen: set[State] = set()
         self.max_time = 24
+        self.states: PriorityQueue = PriorityQueue()
 
     def build(self) -> None:
         self.states = PriorityQueue()

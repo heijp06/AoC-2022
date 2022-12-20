@@ -1,4 +1,3 @@
-import pytest
 from factory import Blueprint, parse
 from lib import part1, part2
 from example import RESULT1, RESULT2, example
