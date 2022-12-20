@@ -30,8 +30,6 @@ class State(NamedTuple):
     obsidian_robots: int
     geode_robots: int
 
-    MAX_TIME = 24
-
     def update(self,
                time: Optional[int] = None,
                ore: Optional[int] = None,
@@ -62,6 +60,7 @@ class Factory:
         self.start_state = State(1, 0, 0, 0, 0, 1, 0, 0, 0)
         self.max_geodes = -1
         self.seen: set[State] = set()
+        self.max_time = 24
 
     def build(self) -> None:
         self.states = PriorityQueue()
@@ -89,9 +88,9 @@ class Factory:
         new_states += self.build_obsidian_robot(new_state)
         new_states += self.build_geode_robot(new_state)
 
-        # if time > 24 stop. only enque if time < 24.
+        # only enque if there still is time left.
         for new_state in new_states:
-            if new_state.time <= State.MAX_TIME:
+            if new_state.time <= self.max_time:
                 self.add_state(new_state)
 
     def build_ore_robot(self, state: State) -> list[State]:
@@ -157,7 +156,7 @@ class Factory:
         obsidian_robot_ore = state.ore
         geode_robot_ore = state.ore
 
-        while state.time <= State.MAX_TIME:
+        while state.time <= self.max_time:
             # update time.
             state = state.update(time=state.time + 1)
 

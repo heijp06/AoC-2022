@@ -12,4 +12,10 @@ def part1(rows: list[str]) -> int:
 
 
 def part2(rows: list[str]) -> int:
-    pass
+    result = 1
+    for row in rows[:3]:
+        factory = parse(row)
+        factory.max_time = 32
+        factory.build()
+        result *= factory.max_geodes
+    return result

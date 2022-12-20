@@ -4,4 +4,4 @@ example = [
 ]
 
 RESULT1 = 33
-RESULT2 = None
+RESULT2 = 56 * 62
