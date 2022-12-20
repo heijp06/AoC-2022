@@ -9,4 +9,4 @@ example = [
 ]
 
 RESULT1 = 3
-RESULT2 = None
+RESULT2 = 1623178306
