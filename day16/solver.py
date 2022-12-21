@@ -34,18 +34,24 @@ class Solver:
             reverse=True)
         self.valve_aa = next(
             valve for valve in self.table.keys() if valve.name == "AA")
+        self.valve_wi = next(
+            valve for valve in self.table.keys() if valve.name == "WI")
+
         self.seen: set[State] = set()
         self.max_pressure = -1
 
     def solve(self) -> int:
         start_state = State(0, frozenset([self.valve_aa]), [
             Probe(MINUTES, self.valve_aa), Probe(MINUTES, self.valve_aa)])
-        self.states2 = PriorityQueue()
+        self.states = PriorityQueue()
         self.add_state(start_state)
-        while self.states2.qsize():
-            neg_pressure, state = self.states2.get()
-            if self.states2.qsize() % 1000 == 0:
-                print(f"{neg_pressure}, {self.max_pressure}, {self.states2.qsize()}")
+        count = 0
+        while not self.states.empty():
+            neg_pressure, state = self.states.get()
+            count += 1
+            if count == 1000:
+                count = 0
+                print(f"{neg_pressure}, {self.max_pressure}, {self.states.qsize()}")
             if self.max_pressure >= -neg_pressure:
                 break
             for index in range(len(state.probes)):
@@ -58,7 +64,7 @@ class Solver:
         self.seen.add(state)
         upper_bound = self.upper_bound(state)
         if upper_bound > self.max_pressure:
-            self.states2.put((-upper_bound, state))
+            self.states.put((-upper_bound, state))
 
     def create_new_states(self, state: State, index: int) -> None:
         probe = state.probes[index]
@@ -85,7 +91,7 @@ class Solver:
 
         minutes = sum(probe.minutes for probe in state.probes)
 
-        min_cost = 2
+        min_cost = 3 if self.valve_wi in state.opened else 2
         pressure = state.pressure
 
         valve_index = 0

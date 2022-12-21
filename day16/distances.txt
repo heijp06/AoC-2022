@@ -1,0 +1,16 @@
+{EK: {EK: 0, HT: 6, MS: 3, VW: 3, WI: 8, TQ: 3, AA: 7, UW: 5, FG: 8, EG: 6, WY: 13, AP: 11, FX: 4, KS: 10, TG: 8, KR: 4} -- 3
+HT: {EK: 6, HT: 0, MS: 4, VW: 8, WI: 3, TQ: 5, AA: 3, UW: 3, FG: 3, EG: 8, WY: 8, AP: 6, FX: 9, KS: 6, TG: 6, KR: 7} -- 3
+MS: {EK: 3, HT: 4, MS: 0, VW: 5, WI: 6, TQ: 3, AA: 6, UW: 5, FG: 6, EG: 6, WY: 11, AP: 9, FX: 6, KS: 9, TG: 8, KR: 4} -- 3
+VW: {EK: 3, HT: 8, MS: 5, VW: 0, WI: 10, TQ: 5, AA: 9, UW: 7, FG: 10, EG: 8, WY: 15, AP: 13, FX: 3, KS: 12, TG: 10, KR: 6}
+WI: {EK: 8, HT: 3, MS: 6, VW: 10, WI: 0, TQ: 7, AA: 2, UW: 5, FG: 4, EG: 10, WY: 6, AP: 4, FX: 11, KS: 7, TG: 8, KR: 9} -- 2
+TQ: {EK: 3, HT: 5, MS: 3, VW: 5, WI: 7, TQ: 0, AA: 5, UW: 3, FG: 7, EG: 4, WY: 11, AP: 9, FX: 6, KS: 8, TG: 6, KR: 4} -- 3
+AA: {EK: 8, HT: 4, MS: 7, VW: 10, WI: 3, TQ: 6, AA: 0, UW: 4, FG: 4, EG: 9, WY: 6, AP: 4, FX: 11, KS: 7, TG: 7, KR: 9} -- 3
+UW: {EK: 5, HT: 3, MS: 5, VW: 7, WI: 5, TQ: 3, AA: 3, UW: 0, FG: 5, EG: 6, WY: 9, AP: 7, FX: 8, KS: 6, TG: 4, KR: 6} -- 3
+FG: {EK: 8, HT: 3, MS: 6, VW: 10, WI: 4, TQ: 7, AA: 3, UW: 5, FG: 0, EG: 10, WY: 6, AP: 4, FX: 11, KS: 4, TG: 6, KR: 9} -- 3
+EG: {EK: 6, HT: 8, MS: 6, VW: 8, WI: 10, TQ: 4, AA: 8, UW: 6, FG: 10, EG: 0, WY: 14, AP: 12, FX: 9, KS: 11, TG: 9, KR: 3} -- 3
+WY: {EK: 13, HT: 8, MS: 11, VW: 15, WI: 6, TQ: 11, AA: 5, UW: 9, FG: 6, EG: 14, WY: 0, AP: 3, FX: 16, KS: 9, TG: 11, KR: 14} -- 3
+AP: {EK: 11, HT: 6, MS: 9, VW: 13, WI: 4, TQ: 9, AA: 3, UW: 7, FG: 4, EG: 12, WY: 3, AP: 0, FX: 14, KS: 7, TG: 9, KR: 12} -- 3
+FX: {EK: 4, HT: 9, MS: 6, VW: 3, WI: 11, TQ: 6, AA: 10, UW: 8, FG: 11, EG: 9, WY: 16, AP: 14, FX: 0, KS: 13, TG: 11, KR: 7} -- 3
+KS: {EK: 10, HT: 6, MS: 9, VW: 12, WI: 7, TQ: 8, AA: 6, UW: 6, FG: 4, EG: 11, WY: 9, AP: 7, FX: 13, KS: 0, TG: 3, KR: 11} -- 3
+TG: {EK: 8, HT: 6, MS: 8, VW: 10, WI: 8, TQ: 6, AA: 6, UW: 4, FG: 6, EG: 9, WY: 11, AP: 9, FX: 11, KS: 3, TG: 0, KR: 9} -- 3
+KR: {EK: 4, HT: 7, MS: 4, VW: 6, WI: 9, TQ: 4, AA: 8, UW: 6, FG: 9, EG: 3, WY: 14, AP: 12, FX: 7, KS: 11, TG: 9, KR: 0}} -- 3
