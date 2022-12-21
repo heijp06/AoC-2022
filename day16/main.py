@@ -27,6 +27,6 @@ rows = list(read_rows())
 # print(f"Part 1: {result1}")
 # clip(result1)
 
-result2 = part2(example)
+result2 = part2(rows)
 print(f"Part 2: {result2}")
 clip(result2)
