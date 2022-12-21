@@ -1,4 +1,3 @@
-from operator import attrgetter
 from typing import NamedTuple
 from queue import PriorityQueue
 from valve import Valve, build_distance_table
