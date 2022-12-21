@@ -30,18 +30,19 @@ class Solver:
     def __init__(self, rows: list[str]) -> None:
         self.table = build_distance_table(rows)
         print(self.table)
-        self.rates = sorted(
-            valve.rate for valve in self.table.keys() if valve.rate > 0)
+        self.valves = sorted(
+            (valve for valve in self.table.keys() if valve.rate > 0),
+            reverse=True)
         self.valve_aa = next(
             valve for valve in self.table.keys() if valve.name == "AA")
         self.seen: set[State] = set()
+        self.max_pressure = -1
 
     def solve(self) -> int:
         start_state = State(0, frozenset([self.valve_aa]), [
             Probe(MINUTES, self.valve_aa), Probe(MINUTES, self.valve_aa)])
         self.states2 = PriorityQueue()
         self.add_state(start_state)
-        self.max_pressure = -1
         while self.states2.qsize():
             neg_pressure, state = self.states2.get()
             if self.states2.qsize() % 1000 == 0:
@@ -56,7 +57,9 @@ class Solver:
         if state in self.seen:
             return
         self.seen.add(state)
-        self.states2.put((-self.upper_bound(state), state))
+        upper_bound = self.upper_bound(state)
+        if upper_bound > self.max_pressure:
+            self.states2.put((-upper_bound, state))
 
     def create_new_states(self, state: State, probe: Probe) -> None:
         for new_valve in self.table.keys():
@@ -83,15 +86,17 @@ class Solver:
         # assume the cost to get to any node is 2.
 
         minutes = sum(probe.minutes for probe in state.probes)
-        rates = sorted(
-            valve.rate for valve in self.table if valve not in state.opened)
 
-        min_cost = 4
+        min_cost = 2
         pressure = state.pressure
 
-        while rates and minutes > min_cost:
-            rate = rates.pop()
-            pressure += (minutes - min_cost) * rate
+        valve_index = 0
+        while valve_index < len(self.valves) and minutes > min_cost:
+            valve = self.valves[valve_index]
+            valve_index += 1
+            if valve in state.opened:
+                continue
             minutes -= min_cost
+            pressure += minutes * valve.rate
 
         return pressure
