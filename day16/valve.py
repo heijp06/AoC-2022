@@ -13,6 +13,9 @@ class Valve:
 
     def __repr__(self) -> str:
         return self.name
+    
+    def __lt__(self, other: Valve) -> bool:
+        return self.name < other.name
 
 
 Table = dict[Valve, dict[Valve, int]]
