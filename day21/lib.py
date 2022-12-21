@@ -7,4 +7,5 @@ def part1(rows: list[str]) -> int:
 
 
 def part2(rows: list[str]) -> int:
-    pass
+    root = parse(rows)
+    return root.part2()

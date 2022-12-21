@@ -17,4 +17,4 @@ example = [
 ]
 
 RESULT1 = 152
-RESULT2 = None
+RESULT2 = 301
