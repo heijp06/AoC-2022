@@ -2,8 +2,6 @@ from typing import NamedTuple
 from queue import PriorityQueue
 from valve import Valve, build_distance_table
 
-MINUTES = 26
-
 
 class Probe(NamedTuple):
     minutes: int
@@ -26,7 +24,7 @@ class State(NamedTuple):
 
 
 class Solver:
-    def __init__(self, rows: list[str]) -> None:
+    def __init__(self, rows: list[str], part: int = 2, minutes: int = 26) -> None:
         self.table = build_distance_table(rows)
         print(self.table)
         self.valves = sorted(
@@ -37,10 +35,16 @@ class Solver:
         self.seen: set[State] = set()
         self.max_pressure = -1
         self.states: PriorityQueue = PriorityQueue()
+        self.part = part
+        self.minutes = minutes
 
     def solve(self) -> int:
-        start_state = State(0, frozenset([self.valve_aa]), [
-            Probe(MINUTES, self.valve_aa), Probe(MINUTES, self.valve_aa)])
+        if self.part == 2:
+            start_state = State(0, frozenset([self.valve_aa]), [
+                Probe(self.minutes, self.valve_aa), Probe(self.minutes, self.valve_aa)])
+        else:
+            start_state = State(0, frozenset([self.valve_aa]), [
+                                Probe(self.minutes, self.valve_aa)])
         self.states: PriorityQueue = PriorityQueue()
         self.add_state(start_state)
         count = 0
@@ -73,7 +77,10 @@ class Solver:
             if cost >= probe.minutes:
                 continue
             new_probe = Probe(probe.minutes - cost, new_valve)
-            new_probes = [new_probe, state.probes[1 - index]]
+            if len(state.probes) == 2:
+                new_probes = [new_probe, state.probes[1 - index]]
+            else:
+                new_probes = [new_probe]
             new_pressure = state.pressure + \
                 (probe.minutes - cost) * new_valve.rate
             new_opened = state.opened | {new_valve}

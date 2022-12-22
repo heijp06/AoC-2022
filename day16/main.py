@@ -2,7 +2,6 @@ from os import getcwd
 from os.path import basename, dirname, join
 import pyperclip    # type: ignore
 from lib import part1, part2
-from example import example
 
 
 def read_rows():
@@ -23,9 +22,9 @@ def clip(data):
 
 
 rows = list(read_rows())
-# result1 = part1(rows)
-# print(f"Part 1: {result1}")
-# clip(result1)
+result1 = part1(rows)
+print(f"Part 1: {result1}")
+clip(result1)
 
 result2 = part2(rows)
 print(f"Part 2: {result2}")
