@@ -16,4 +16,4 @@ example = [
 ]
 
 RESULT1 = 6032
-RESULT2 = None
+RESULT2 = 5031
