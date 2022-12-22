@@ -30,8 +30,6 @@ class Solver:
         self.valves = sorted(
             (valve for valve in self.table.keys() if valve.rate > 0),
             reverse=True)
-        self.valve_aa = next(
-            valve for valve in self.table.keys() if valve.name == "AA")
         self.seen: set[State] = set()
         self.max_pressure = -1
         self.states: PriorityQueue = PriorityQueue()
@@ -39,13 +37,14 @@ class Solver:
         self.minutes = minutes
 
     def solve(self) -> int:
+        valve_aa = next(valve for valve in self.table.keys()
+                        if valve.name == "AA")
         if self.part == 2:
-            start_state = State(0, frozenset([self.valve_aa]), [
-                Probe(self.minutes, self.valve_aa), Probe(self.minutes, self.valve_aa)])
+            start_state = State(0, frozenset([valve_aa]), [
+                Probe(self.minutes, valve_aa), Probe(self.minutes, valve_aa)])
         else:
-            start_state = State(0, frozenset([self.valve_aa]), [
-                                Probe(self.minutes, self.valve_aa)])
-        self.states: PriorityQueue = PriorityQueue()
+            start_state = State(0, frozenset([valve_aa]), [
+                                Probe(self.minutes, valve_aa)])
         self.add_state(start_state)
         count = 0
         while not self.states.empty():
