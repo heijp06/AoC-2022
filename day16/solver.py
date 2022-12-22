@@ -34,8 +34,6 @@ class Solver:
             reverse=True)
         self.valve_aa = next(
             valve for valve in self.table.keys() if valve.name == "AA")
-        self.valve_wi = next(
-            valve for valve in self.table.keys() if valve.name == "WI")
 
         self.seen: set[State] = set()
         self.max_pressure = -1
@@ -91,7 +89,7 @@ class Solver:
 
         minutes = sum(probe.minutes for probe in state.probes)
 
-        min_cost = 3 if self.valve_wi in state.opened else 2
+        min_cost = 2
         pressure = state.pressure
 
         valve_index = 0
