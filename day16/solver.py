@@ -15,14 +15,14 @@ class State(NamedTuple):
     opened: frozenset[Valve]
     probes: list[Probe]
 
-    def __key(self):
+    def _key(self):
         return (self.pressure, self.opened, frozenset(self.probes))
 
     def __eq__(self, other: object) -> bool:
-        return self.__key == other.__key if isinstance(other, State) else False
+        return self._key() == other._key() if isinstance(other, State) else False
 
     def __hash__(self) -> int:
-        return hash(self.__key)
+        return hash(self._key())
 
 
 class Solver:
@@ -34,14 +34,14 @@ class Solver:
             reverse=True)
         self.valve_aa = next(
             valve for valve in self.table.keys() if valve.name == "AA")
-
         self.seen: set[State] = set()
         self.max_pressure = -1
+        self.states: PriorityQueue = PriorityQueue()
 
     def solve(self) -> int:
         start_state = State(0, frozenset([self.valve_aa]), [
             Probe(MINUTES, self.valve_aa), Probe(MINUTES, self.valve_aa)])
-        self.states = PriorityQueue()
+        self.states: PriorityQueue = PriorityQueue()
         self.add_state(start_state)
         count = 0
         while not self.states.empty():
@@ -81,7 +81,7 @@ class Solver:
             self.add_state(new_state)
             self.max_pressure = max(self.max_pressure, new_pressure)
 
-    def upper_bound(self, state: State) -> None:
+    def upper_bound(self, state: State) -> int:
         # calculate an upper bound for the amount of pressure that can be generated.
 
         # add the time for all probes together.
