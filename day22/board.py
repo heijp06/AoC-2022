@@ -43,7 +43,7 @@ def get_face_example() -> Face:
     face2.up = lambda p: (face1, Position(1, 13 - p.column), Position(1, 0))
 
     face3.right = lambda p: (face4, Position(p.row, 9), Position(0, 1))
-    face3.down = lambda p: (face5, Position(17 - p.column), Position(0, 1))
+    face3.down = lambda p: (face5, Position(17 - p.column, 9), Position(0, 1))
     face3.left = lambda p: (face2, Position(p.row, 4), Position(0, -1))
     face3.up = lambda p: (face1, Position(p.column - 4, 9), Position(0, 1))
 
@@ -76,12 +76,15 @@ def get_face_input() -> Face:
     face1.right = lambda p: (face2, Position(p.row, 101), Position(0, 1))
     face1.down = lambda p: (face3, Position(51, p.column), Position(1, 0))
     face1.left = lambda p: (face4, Position(151 - p.row, 1), Position(0, 1))
-    face1.up = lambda p: (face6, Position(100 + p.column , 1), Position(0, 1))
+    face1.up = lambda p: (face6, Position(100 + p.column, 1), Position(0, 1))
 
-    face2.right = lambda p: (face5, Position(151 - p.row, 100), Position(0, -1))
-    face2.down = lambda p: (face3, Position(p.column - 50, 100), Position(0, -1))
+    face2.right = lambda p: (face5, Position(
+        151 - p.row, 100), Position(0, -1))
+    face2.down = lambda p: (face3, Position(
+        p.column - 50, 100), Position(0, -1))
     face2.left = lambda p: (face1, Position(p.row, 100), Position(0, -1))
-    face2.up = lambda p: (face6, Position(200, p.column - 100), Position(-1, 0))
+    face2.up = lambda p: (face6, Position(
+        200, p.column - 100), Position(-1, 0))
 
     face3.right = lambda p: (face2, Position(50, p.row + 50), Position(-1, 0))
     face3.down = lambda p: (face5, Position(101, p.column), Position(1, 0))
@@ -93,12 +96,15 @@ def get_face_input() -> Face:
     face4.left = lambda p: (face1, Position(151 - p.row, 51), Position(0, 1))
     face4.up = lambda p: (face3, Position(50 + p.column, 51), Position(0, 1))
 
-    face5.right = lambda p: (face2, Position(151 - p.row, 150), Position(0, -1))
-    face5.down = lambda p: (face6, Position(p.column + 100, 50), Position(0, -1))
+    face5.right = lambda p: (face2, Position(
+        151 - p.row, 150), Position(0, -1))
+    face5.down = lambda p: (face6, Position(
+        p.column + 100, 50), Position(0, -1))
     face5.left = lambda p: (face4, Position(p.row, 50), Position(0, -1))
     face5.up = lambda p: (face3, Position(100, p.column), Position(-1, 0))
 
-    face6.right = lambda p: (face5, Position(150, p.row - 100), Position(-1, 0))
+    face6.right = lambda p: (face5, Position(
+        150, p.row - 100), Position(-1, 0))
     face6.down = lambda p: (face2, Position(1, p.column + 100), Position(1, 0))
     face6.left = lambda p: (face1, Position(1, p.row - 100), Position(1, 0))
     face6.up = lambda p: (face4, Position(150, p.column), Position(-1, 0))
@@ -106,9 +112,22 @@ def get_face_input() -> Face:
     return face1
 
 
-class Position(NamedTuple):
-    row: int
-    column: int
+class Position:
+    def __init__(self, row: int, column: int) -> None:
+        self.row = row
+        self.column = column
+    
+    def _key(self) -> tuple[int, int]:
+        return (self.row, self.column)
+    
+    def __repr__(self) -> str:
+        return repr(self._key())
+    
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Position) and self._key() == other._key()
+    
+    def __hash__(self) -> int:
+        return hash(self._key())
 
     def __add__(self, other: Position) -> Position:
         return Position(self.row + other.row, self.column + other.column)
@@ -132,15 +151,15 @@ class Face:
 
     def move_off_edge(self, position: Position, direction: Position) -> tuple[Face, Position, Position]:
         if direction == (0, 1) and position.column == self.end.column:
-            return self.right(position, direction)
+            return self.right(position)
         elif direction == (1, 0) and position.row == self.end.row:
-            return self.down(position, direction)
+            return self.down(position)
         elif direction == (0, -1) and position.column == self.start.column:
-            return self.left(position, direction)
+            return self.left(position)
         elif direction == (-1, 0) and position.row == self.start.row:
-            return self.up(position, direction)
+            return self.up(position)
         raise ValueError(
-            f"Cannot move off edge on face {self.name} at {self.position} in direction {self.direction}")
+            f"Cannot move off edge on face {self.name} at {position} in direction {direction}")
 
 
 class Board:
@@ -211,5 +230,5 @@ class Board:
         self.direction = Position(-self.direction.column, self.direction.row)
 
     def password(self) -> int:
-        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        directions = [Position(0, 1), Position(1, 0), Position(0, -1), Position(-1, 0)]
         return 1000 * self.position.row + 4 * self.position.column + directions.index(self.direction)
