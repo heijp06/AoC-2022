@@ -66,7 +66,44 @@ def get_face_example() -> Face:
 
 
 def get_face_input() -> Face:
-    pass
+    face1 = Face(1, Position(1, 51), Position(50, 100))
+    face2 = Face(2, Position(1, 101), Position(50, 150))
+    face3 = Face(3, Position(51, 51), Position(100, 100))
+    face4 = Face(4, Position(101, 1), Position(150, 50))
+    face5 = Face(5, Position(101, 51), Position(150, 100))
+    face6 = Face(6, Position(151, 1), Position(200, 50))
+
+    face1.right = lambda p: (face2, Position(p.row, 101), Position(0, 1))
+    face1.down = lambda p: (face3, Position(51, p.column), Position(1, 0))
+    face1.left = lambda p: (face4, Position(151 - p.row, 1), Position(0, 1))
+    face1.up = lambda p: (face6, Position(100 + p.column , 1), Position(0, 1))
+
+    face2.right = lambda p: (face5, Position(151 - p.row, 100), Position(0, -1))
+    face2.down = lambda p: (face3, Position(p.column - 50, 100), Position(0, -1))
+    face2.left = lambda p: (face1, Position(p.row, 100), Position(0, -1))
+    face2.up = lambda p: (face6, Position(200, p.column - 100), Position(-1, 0))
+
+    face3.right = lambda p: (face2, Position(50, p.row + 50), Position(-1, 0))
+    face3.down = lambda p: (face5, Position(101, p.column), Position(1, 0))
+    face3.left = lambda p: (face4, Position(101, p.row - 50), Position(1, 0))
+    face3.up = lambda p: (face1, Position(50, p.column), Position(-1, 0))
+
+    face4.right = lambda p: (face5, Position(p.row, 51), Position(0, 1))
+    face4.down = lambda p: (face6, Position(151, p.column), Position(1, 0))
+    face4.left = lambda p: (face1, Position(151 - p.row, 51), Position(0, 1))
+    face4.up = lambda p: (face3, Position(50 + p.column, 51), Position(0, 1))
+
+    face5.right = lambda p: (face2, Position(151 - p.row, 150), Position(0, -1))
+    face5.down = lambda p: (face6, Position(p.column + 100, 50), Position(0, -1))
+    face5.left = lambda p: (face4, Position(p.row, 50), Position(0, -1))
+    face5.up = lambda p: (face3, Position(100, p.column), Position(-1, 0))
+
+    face6.right = lambda p: (face5, Position(150, p.row - 100), Position(-1, 0))
+    face6.down = lambda p: (face2, Position(1, p.column + 100), Position(1, 0))
+    face6.left = lambda p: (face1, Position(1, p.row - 100), Position(1, 0))
+    face6.up = lambda p: (face4, Position(150, p.column), Position(-1, 0))
+
+    return face1
 
 
 class Position(NamedTuple):
