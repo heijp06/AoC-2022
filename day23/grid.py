@@ -40,9 +40,14 @@ class Position:
 class Grid:
     def __init__(self, elves: list[Position]) -> None:
         self.elves = frozenset(elves)
-        self.rules = ["N", "S", "W", "E"]
+        self.rules = (
+            (Position(-1, 0), Position(-1, -1), Position(-1, 1)),
+            (Position(1, 0), Position(1, -1), Position(1, 1)),
+            (Position(0, -1), Position(-1, -1), Position(1, -1)),
+            (Position(0, 1), Position(-1, 1), Position(1, 1))
+        )
 
-    def _key(self) -> tuple[frozenset[Position], tuple[str, ...]]:
+    def _key(self) -> tuple[frozenset[Position], tuple[tuple[Position, Position, Position], ...]]:
         return (self.elves, tuple(self.rules))
 
     def __eq__(self, other: object) -> bool:
@@ -114,29 +119,19 @@ class Grid:
     def get_direction(self, elf: Position) -> Optional[Position]:
         if not self.move(elf):
             return None
-        for position in self.rules:
-            match position:
-                case "N":
-                    new_positions = self.get_new_positions(
-                        elf, [(-1, 0), (-1, -1), (-1, 1)])
-                    if not self.elves & new_positions:
-                        return Position(elf.row - 1, elf.column)
-                case "S":
-                    new_positions = self.get_new_positions(
-                        elf, [(1, 0), (1, -1), (1, 1)])
-                    if not self.elves & new_positions:
-                        return Position(elf.row + 1, elf.column)
-                case "W":
-                    new_positions = self.get_new_positions(
-                        elf, [(0, -1), (-1, -1), (1, -1)])
-                    if not self.elves & new_positions:
-                        return Position(elf.row, elf.column - 1)
-                case "E":
-                    new_positions = self.get_new_positions(
-                        elf, [(0, 1), (-1, 1), (1, 1)])
-                    if not self.elves & new_positions:
-                        return Position(elf.row, elf.column + 1)
+        for rule in self.rules:
+            new_position = self.get_new_position(elf, rule)
+            if new_position is not None:
+                return new_position
         return None
 
-    def get_new_positions(self, elf: Position, directions: list[tuple[int, int]]):
-        return {elf + Position(*direction) for direction in directions}
+    def get_new_position(
+            self,
+            elf: Position,
+            directions: tuple[Position, Position, Position]) -> Optional[Position]:
+        new_positions = {elf + direction for direction in directions}
+        return (
+            None
+            if self.elves & new_positions
+            else Position(elf.row, elf.column) + directions[0]
+        )
