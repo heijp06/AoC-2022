@@ -3,6 +3,7 @@ from os.path import basename, dirname, join
 import csv
 import pyperclip    # type: ignore
 from lib import part1, part2
+from example import small, example
 
 
 def read_rows(**kwargs):
@@ -24,8 +25,8 @@ def clip(data):
     pyperclip.copy(data)
 
 
-rows = [row for row in read_rows()]
-result1 = part1(rows)
+rows = list(read_rows())
+result1 = part1(small)
 print(f"Part 1: {result1}")
 clip(result1)
 
