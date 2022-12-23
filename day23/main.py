@@ -1,15 +1,11 @@
 from os import getcwd
 from os.path import basename, dirname, join
-import csv
 import pyperclip    # type: ignore
 from lib import part1, part2
-from example import small, example
 
 
-def read_rows(**kwargs):
+def read_rows():
     with open(get_data_path(), encoding='ASCII', newline='') as csv_file:
-        # return list(csv.reader(csv_file, **kwargs))
-        # return csv_file.read().strip()
         return csv_file.read().splitlines()
 
 

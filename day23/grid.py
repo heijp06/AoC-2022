@@ -1,7 +1,7 @@
 from __future__ import annotations
 from collections import defaultdict
 from itertools import starmap
-from typing import NamedTuple, Optional
+from typing import Optional
 
 
 def parse(rows: list[str]) -> Grid:
@@ -43,48 +43,56 @@ class Grid:
 
     def do_round(self) -> bool:
         directions: dict[Position, int] = defaultdict(int)
-        for elve in self.elves:
-            if self.move(elve):
-                direction = self.get_direction(elve)
-                if direction is not None:
-                    directions[direction] += 1
+        for elf in self.elves:
+            direction = self.get_direction(elf)
+            if direction is not None:
+                directions[direction] += 1
         new_elves: set[Position] = set()
-        for elve in self.elves:
-            if self.move(elve):
-                direction = self.get_direction(elve)
-                if direction is not None and directions[direction] == 1:
-                    new_elves.add(direction)
-                    continue
-            new_elves.add(elve)
+        for elf in self.elves:
+            direction = self.get_direction(elf)
+            if direction is not None and directions[direction] == 1:
+                new_elves.add(direction)
+                continue
+            new_elves.add(elf)
         self.rules = self.rules[1:] + self.rules[:1]
         if self.elves == new_elves:
             return True
         self.elves = new_elves
         return False
 
-    def move(self, elve: Position) -> bool:
+    def move(self, elf: Position) -> bool:
         return any(
-            elve + position in self.elves
+            elf + position in self.elves
             for position in starmap(
                 Position,
-                iter(
-                    [
-                        (x, y)
-                        for x in range(-1, 2)
-                        for y in range(-1, 2)
-                        if (x, y) != (0, 0)
-                    ]
-                ),
+                (
+                    (x, y)
+                    for x in range(-1, 2)
+                    for y in range(-1, 2)
+                    if (x, y) != (0, 0)
+                )
             )
         )
 
+    def get_bounds(self) -> tuple[Position, Position]:
+        min_row = min(elf.row for elf in self.elves)
+        max_row = max(elf.row for elf in self.elves)
+        min_column = min(elf.column for elf in self.elves)
+        max_column = max(elf.column for elf in self.elves)
+        return (Position(min_row, min_column), Position(max_row, max_column))
+
+    def get_width(self) -> int:
+        top_left, bottom_right = self.get_bounds()
+        return bottom_right.column - top_left.column + 1
+
+    def get_height(self) -> int:
+        top_left, bottom_right = self.get_bounds()
+        return bottom_right.row - top_left.row + 1
+
     def dump(self):
-        min_row = min(elve.row for elve in self.elves)
-        max_row = max(elve.row for elve in self.elves)
-        min_column = min(elve.column for elve in self.elves)
-        max_column = max(elve.column for elve in self.elves)
-        for row in range(min_row, max_row + 1):
-            for column in range(min_column, max_column + 1):
+        top_left, bottom_right = self.get_bounds()
+        for row in range(top_left.row, bottom_right.row + 1):
+            for column in range(top_left.column, bottom_right.column + 1):
                 if Position(row, column) in self.elves:
                     print("#", end="")
                 else:
@@ -92,51 +100,32 @@ class Grid:
             print()
         print()
 
-    def get_direction(self, elve: Position) -> Optional[Position]:
+    def get_direction(self, elf: Position) -> Optional[Position]:
+        if not self.move(elf):
+            return None
         for position in self.rules:
             match position:
                 case "N":
-                    new_positions = {
-                        elve + direction
-                        for direction in [
-                            Position(-1, 0),
-                            Position(-1, -1),
-                            Position(-1, 1),
-                        ]
-                    }
+                    new_positions = self.get_new_positions(
+                        elf, [(-1, 0), (-1, -1), (-1, 1)])
                     if not self.elves & new_positions:
-                        return Position(elve.row - 1, elve.column)
+                        return Position(elf.row - 1, elf.column)
                 case "S":
-                    new_positions = {
-                        elve + direction
-                        for direction in [
-                            Position(1, 0),
-                            Position(1, -1),
-                            Position(1, 1),
-                        ]
-                    }
+                    new_positions = self.get_new_positions(
+                        elf, [(1, 0), (1, -1), (1, 1)])
                     if not self.elves & new_positions:
-                        return Position(elve.row + 1, elve.column)
+                        return Position(elf.row + 1, elf.column)
                 case "W":
-                    new_positions = {
-                        elve + direction
-                        for direction in [
-                            Position(0, -1),
-                            Position(-1, -1),
-                            Position(1, -1),
-                        ]
-                    }
+                    new_positions = self.get_new_positions(
+                        elf, [(0, -1), (-1, -1), (1, -1)])
                     if not self.elves & new_positions:
-                        return Position(elve.row, elve.column - 1)
+                        return Position(elf.row, elf.column - 1)
                 case "E":
-                    new_positions = {
-                        elve + direction
-                        for direction in [
-                            Position(0, 1),
-                            Position(-1, 1),
-                            Position(1, 1),
-                        ]
-                    }
+                    new_positions = self.get_new_positions(
+                        elf, [(0, 1), (-1, 1), (1, 1)])
                     if not self.elves & new_positions:
-                        return Position(elve.row, elve.column + 1)
+                        return Position(elf.row, elf.column + 1)
         return None
+
+    def get_new_positions(self, elf: Position, directions: list[tuple[int, int]]):
+        return {elf + Position(*direction) for direction in directions}
