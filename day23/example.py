@@ -9,7 +9,7 @@ example = [
 ]
 
 RESULT1 = 110
-RESULT2 = None
+RESULT2 = 20
 
 small = [
 ".....",

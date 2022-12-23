@@ -1,12 +1,13 @@
 from grid import parse
+from itertools import count
 
 
 def part1(rows: list[str]) -> int:
     grid = parse(rows)
-    grid.dump()
-    for _ in range(3):
+    # grid.dump()
+    for _ in range(10):
         grid.do_round()
-        grid.dump()
+        # grid.dump()
 
     min_row = min(elve.row for elve in grid.elves)
     max_row = max(elve.row for elve in grid.elves)
@@ -20,4 +21,12 @@ def part1(rows: list[str]) -> int:
 
 
 def part2(rows: list[str]) -> int:
-    pass
+    grid = parse(rows)
+    for round in count(1):
+        print(round)
+        if round % 1000 == 0:
+            print(round)
+            grid.dump()
+        if grid.do_round():
+            grid.dump()
+            return round

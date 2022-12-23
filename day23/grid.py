@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections import defaultdict
+from itertools import starmap
 from typing import NamedTuple
 
 
@@ -40,20 +41,41 @@ class Grid:
         self.elves = set(elves)
         self.rules = ["N", "S", "W", "E"]
 
-    def do_round(self) -> None:
+    def do_round(self) -> bool:
         directions: dict[Position, int] = defaultdict(int)
         for elve in self.elves:
-            direction = self.get_direction(elve)
-            directions[direction] += 1
+            if self.move(elve):
+                direction = self.get_direction(elve)
+                directions[direction] += 1
         new_elves: set[Position] = set()
         for elve in self.elves:
-            direction = self.get_direction(elve)
-            if directions[direction] == 1:
-                new_elves.add(direction)
-            else:
-                new_elves.add(elve)
-        self.elves = new_elves
+            if self.move(elve):
+                direction = self.get_direction(elve)
+                if directions[direction] == 1:
+                    new_elves.add(direction)
+                    continue
+            new_elves.add(elve)
         self.rules = self.rules[1:] + self.rules[:1]
+        if self.elves == new_elves:
+            return True
+        self.elves = new_elves
+        return False
+
+    def move(self, elve: Position) -> bool:
+        return any(
+            elve + position in self.elves
+            for position in starmap(
+                Position,
+                iter(
+                    [
+                        (x, y)
+                        for x in range(-1, 2)
+                        for y in range(-1, 2)
+                        if (x, y) != (0, 0)
+                    ]
+                ),
+            )
+        )
 
     def dump(self):
         min_row = min(elve.row for elve in self.elves)

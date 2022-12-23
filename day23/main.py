@@ -26,7 +26,7 @@ def clip(data):
 
 
 rows = list(read_rows())
-result1 = part1(small)
+result1 = part1(rows)
 print(f"Part 1: {result1}")
 clip(result1)
 
