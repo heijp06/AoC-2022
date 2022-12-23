@@ -52,7 +52,7 @@ class Solver:
             count += 1
             if count == 1000:
                 count = 0
-                print(f"{neg_pressure}, {self.max_pressure}, {self.states.qsize()}")
+                print(f"{-neg_pressure}, {self.max_pressure}, {self.states.qsize()}")
             if self.max_pressure >= -neg_pressure:
                 break
             for index in range(len(state.probes)):
