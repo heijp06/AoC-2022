@@ -1,7 +1,7 @@
 from __future__ import annotations
 from collections import defaultdict
 from itertools import starmap
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 
 def parse(rows: list[str]) -> Grid:
@@ -46,12 +46,13 @@ class Grid:
         for elve in self.elves:
             if self.move(elve):
                 direction = self.get_direction(elve)
-                directions[direction] += 1
+                if direction is not None:
+                    directions[direction] += 1
         new_elves: set[Position] = set()
         for elve in self.elves:
             if self.move(elve):
                 direction = self.get_direction(elve)
-                if directions[direction] == 1:
+                if direction is not None and directions[direction] == 1:
                     new_elves.add(direction)
                     continue
             new_elves.add(elve)
@@ -91,7 +92,7 @@ class Grid:
             print()
         print()
 
-    def get_direction(self, elve: Position) -> Position:
+    def get_direction(self, elve: Position) -> Optional[Position]:
         for position in self.rules:
             match position:
                 case "N":
@@ -138,3 +139,4 @@ class Grid:
                     }
                     if not self.elves & new_positions:
                         return Position(elve.row, elve.column + 1)
+        return None
