@@ -48,7 +48,7 @@ class Grid:
         )
 
     def _key(self) -> tuple[frozenset[Position], tuple[tuple[Position, Position, Position], ...]]:
-        return (self.elves, tuple(self.rules))
+        return (self.elves, self.rules)
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Grid) and self._key() == other._key()
