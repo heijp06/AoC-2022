@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections import defaultdict
+from functools import lru_cache
 from itertools import starmap
 from typing import Optional
 
@@ -38,8 +39,17 @@ class Position:
 
 class Grid:
     def __init__(self, elves: list[Position]) -> None:
-        self.elves = set(elves)
+        self.elves = frozenset(elves)
         self.rules = ["N", "S", "W", "E"]
+
+    def _key(self) -> tuple[frozenset[Position], tuple[str, ...]]:
+        return (self.elves, tuple(self.rules))
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Grid) and self._key() == other._key()
+
+    def __hash__(self) -> int:
+        return hash(self._key())
 
     def do_round(self) -> bool:
         directions: dict[Position, int] = defaultdict(int)
@@ -57,7 +67,7 @@ class Grid:
         self.rules = self.rules[1:] + self.rules[:1]
         if self.elves == new_elves:
             return True
-        self.elves = new_elves
+        self.elves = frozenset(new_elves)
         return False
 
     def move(self, elf: Position) -> bool:
@@ -100,6 +110,7 @@ class Grid:
             print()
         print()
 
+    @lru_cache(maxsize=1000000)
     def get_direction(self, elf: Position) -> Optional[Position]:
         if not self.move(elf):
             return None
