@@ -4,6 +4,8 @@ from valley import parse
 def part1(rows: list[str]) -> int:
     valley = parse(rows)
     valley.solve()
+    if valley.min_distance is None:
+        raise ValueError("No min distance found.")
     return valley.min_distance
 
 

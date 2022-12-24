@@ -2,7 +2,6 @@ from os import getcwd
 from os.path import basename, dirname, join
 import pyperclip    # type: ignore
 from lib import part1, part2
-from example import example
 
 
 def read_rows():
