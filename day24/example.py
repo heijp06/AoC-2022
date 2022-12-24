@@ -8,4 +8,4 @@ example = [
 ]
 
 RESULT1 = 18
-RESULT2 = None
+RESULT2 = 54

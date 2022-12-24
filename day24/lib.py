@@ -3,11 +3,15 @@ from valley import parse
 
 def part1(rows: list[str]) -> int:
     valley = parse(rows)
-    valley.solve()
+    valley.solve(1)
     if valley.min_distance is None:
         raise ValueError("No min distance found.")
     return valley.min_distance
 
 
 def part2(rows: list[str]) -> int:
-    pass
+    valley = parse(rows)
+    valley.solve(2)
+    if valley.min_distance is None:
+        raise ValueError("No min distance found.")
+    return valley.min_distance

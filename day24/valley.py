@@ -112,9 +112,11 @@ class Position:
     def __lt__(self, other: Position) -> bool:
         return self._key() < other._key()
 
+
 class State(NamedTuple):
     steps: int
     position: Position
+    targets: tuple[Position]
 
 
 class Valley:
@@ -126,9 +128,14 @@ class Valley:
         self.seen: set[State] = set()
         self.min_distance: Optional[int] = None
 
-    def solve(self) -> None:
+    def solve(self, part: int) -> None:
         self.seen.clear()
-        start_state = State(0, self.start)
+        if part == 1:
+            start_state = State(0, self.start, (self.end,))
+        elif part == 2:
+            start_state = State(0, self.start, (self.end, self.start, self.end))
+        else:
+            raise ValueError(f"part == {part}, should be 1 or 2.")
         self.add_state(start_state)
         self.min_distance = None
         while not self.states.empty():
@@ -140,25 +147,34 @@ class Valley:
     def add_state(self, state: State):
         if state in self.seen:
             return
-        if state.position == self.end:
-            self.min_distance = min(self.min_distance or state.steps, state.steps)
-            return
+        if state.position == state.targets[0]:
+            if len(state.targets) == 1:
+                self.min_distance = min(
+                    self.min_distance or state.steps, state.steps)
+                return
+            else:
+                state = State(state.steps, state.position, state.targets[1:])
         self.seen.add(state)
         self.states.put((self.get_min_distance(state), state))
 
     def get_min_distance(self, state: State) -> int:
-        return (
-            abs(self.end.row - state.position.row)
-            + abs(self.end.column - state.position.column)
-            + state.steps
+        to_target = (
+            abs(state.targets[0].row - state.position.row)
+            + abs(state.targets[0].column - state.position.column)
         )
+        rest = (
+            (len(state.targets) - 1)
+            * (abs(self.end.row - self.start.row) + abs(self.end.column - self.start.column))
+        )
+        return state.steps + to_target + rest
+
 
     def create_new_states(self, state: State) -> None:
         for direction in itertools.starmap(Position, [(0, 0), (0, 1), (1, 0), (0, -1), (-1, 0)]):
             new_steps = state.steps + 1
             new_position = state.position + direction
             if self.is_open_spot(new_steps, new_position):
-                self.add_state(State(new_steps, new_position))
+                self.add_state(State(new_steps, new_position, state.targets))
 
     def is_open_spot(self, steps: int, position: Position) -> bool:
         return position in self.open_spots[steps % len(self.open_spots)]
