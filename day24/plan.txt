@@ -1,0 +1,8 @@
+- Find the number of distinct maps,
+  - = lcm(width, height)
+- Calculate all maps
+  - = sets of free points
+- Use state for representing where you are.
+  - minutes (determining map)
+  - position
+- Heuristic is manhattan distance
