@@ -1,7 +1,8 @@
 from __future__ import annotations
 import itertools
 from math import lcm
-from typing import NamedTuple
+from queue import PriorityQueue
+from typing import NamedTuple, Optional
 
 
 def parse(rows: list[str]) -> Valley:
@@ -102,11 +103,18 @@ class Position:
     def __hash__(self) -> int:
         return hash(self._key())
 
-    def __add__(self, other) -> Position:
+    def __add__(self, other: Position) -> Position:
         return Position(self.row + other.row, self.column + other.column)
 
     def __repr__(self) -> str:
         return repr(self._key())
+
+    def __lt__(self, other: Position) -> bool:
+        return self._key() < other._key()
+
+class State(NamedTuple):
+    steps: int
+    position: Position
 
 
 class Valley:
@@ -114,3 +122,43 @@ class Valley:
         self.open_spots = open_spots
         self.start = start
         self.end = end
+        self.states: PriorityQueue = PriorityQueue()
+        self.seen: set[State] = set()
+        self.min_distance: Optional[int] = None
+
+    def solve(self) -> None:
+        self.seen.clear()
+        start_state = State(0, self.start)
+        self.add_state(start_state)
+        self.min_distance = None
+        while not self.states.empty():
+            min_distance, state = self.states.get()
+            if self.min_distance and self.min_distance <= min_distance:
+                break
+            self.create_new_states(state)
+
+    def add_state(self, state: State):
+        if state in self.seen:
+            return
+        if state.position == self.end:
+            self.min_distance = min(self.min_distance or state.steps, state.steps)
+            return
+        self.seen.add(state)
+        self.states.put((self.get_min_distance(state), state))
+
+    def get_min_distance(self, state: State) -> int:
+        return (
+            abs(self.end.row - state.position.row)
+            + abs(self.end.column - state.position.column)
+            + state.steps
+        )
+
+    def create_new_states(self, state: State) -> None:
+        for direction in itertools.starmap(Position, [(0, 0), (0, 1), (1, 0), (0, -1), (-1, 0)]):
+            new_steps = state.steps + 1
+            new_position = state.position + direction
+            if self.is_open_spot(new_steps, new_position):
+                self.add_state(State(new_steps, new_position))
+
+    def is_open_spot(self, steps: int, position: Position) -> bool:
+        return position in self.open_spots[steps % len(self.open_spots)]
