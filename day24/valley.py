@@ -116,7 +116,7 @@ class Position:
 class State(NamedTuple):
     steps: int
     position: Position
-    targets: tuple[Position]
+    targets: tuple[Position, ...]
 
 
 class Valley:
@@ -152,8 +152,7 @@ class Valley:
                 self.min_distance = min(
                     self.min_distance or state.steps, state.steps)
                 return
-            else:
-                state = State(state.steps, state.position, state.targets[1:])
+            state = State(state.steps, state.position, state.targets[1:])
         self.seen.add(state)
         self.states.put((self.get_min_distance(state), state))
 
