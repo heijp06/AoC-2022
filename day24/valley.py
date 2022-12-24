@@ -147,13 +147,13 @@ class Valley:
     def add_state(self, state: State):
         if state in self.seen:
             return
+        self.seen.add(state)
         if state.position == state.targets[0]:
             if len(state.targets) == 1:
                 self.min_distance = min(
                     self.min_distance or state.steps, state.steps)
                 return
             state = State(state.steps, state.position, state.targets[1:])
-        self.seen.add(state)
         self.states.put((self.get_min_distance(state), state))
 
     def get_min_distance(self, state: State) -> int:
