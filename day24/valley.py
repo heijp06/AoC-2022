@@ -133,7 +133,8 @@ class Valley:
         if part == 1:
             start_state = State(0, self.start, (self.end,))
         elif part == 2:
-            start_state = State(0, self.start, (self.end, self.start, self.end))
+            start_state = State(
+                0, self.start, (self.end, self.start, self.end))
         else:
             raise ValueError(f"part == {part}, should be 1 or 2.")
         self.add_state(start_state)
@@ -148,12 +149,6 @@ class Valley:
         if state in self.seen:
             return
         self.seen.add(state)
-        if state.position == state.targets[0]:
-            if len(state.targets) == 1:
-                self.min_distance = min(
-                    self.min_distance or state.steps, state.steps)
-                return
-            state = State(state.steps, state.position, state.targets[1:])
         self.states.put((self.get_min_distance(state), state))
 
     def get_min_distance(self, state: State) -> int:
@@ -167,13 +162,20 @@ class Valley:
         )
         return state.steps + to_target + rest
 
-
     def create_new_states(self, state: State) -> None:
         for direction in itertools.starmap(Position, [(0, 0), (0, 1), (1, 0), (0, -1), (-1, 0)]):
             new_steps = state.steps + 1
             new_position = state.position + direction
-            if self.is_open_spot(new_steps, new_position):
-                self.add_state(State(new_steps, new_position, state.targets))
+            new_targets = state.targets
+            if not self.is_open_spot(new_steps, new_position):
+                continue
+            if new_position == state.targets[0]:
+                if len(state.targets) == 1:
+                    self.min_distance = min(
+                        self.min_distance or new_steps, new_steps)
+                    return
+                new_targets = state.targets[1:]
+            self.add_state(State(new_steps, new_position, new_targets))
 
     def is_open_spot(self, steps: int, position: Position) -> bool:
         return position in self.open_spots[steps % len(self.open_spots)]
