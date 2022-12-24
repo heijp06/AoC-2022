@@ -127,6 +127,7 @@ class Valley:
         self.states: PriorityQueue = PriorityQueue()
         self.seen: set[State] = set()
         self.min_distance: Optional[int] = None
+        self.min_path_length = self.manhattan_distance(self.start, self.end)
 
     def solve(self, part: int) -> None:
         self.seen.clear()
@@ -152,15 +153,12 @@ class Valley:
         self.states.put((self.get_min_distance(state), state))
 
     def get_min_distance(self, state: State) -> int:
-        to_target = (
-            abs(state.targets[0].row - state.position.row)
-            + abs(state.targets[0].column - state.position.column)
-        )
-        rest = (
-            (len(state.targets) - 1)
-            * (abs(self.end.row - self.start.row) + abs(self.end.column - self.start.column))
-        )
+        to_target = self.manhattan_distance(state.position, state.targets[0])
+        rest = (len(state.targets) - 1) * self.min_path_length
         return state.steps + to_target + rest
+
+    def manhattan_distance(self, position1: Position, position2: Position) -> int:
+        return abs(position2.row - position1.row) + abs(position2.column - position1.column)
 
     def create_new_states(self, state: State) -> None:
         for direction in itertools.starmap(Position, [(0, 0), (0, 1), (1, 0), (0, -1), (-1, 0)]):
