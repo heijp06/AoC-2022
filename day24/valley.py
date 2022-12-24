@@ -6,87 +6,7 @@ from typing import NamedTuple, Optional
 
 
 def parse(rows: list[str]) -> Valley:
-    height = len(rows)
-    width = len(rows[0])
-    up: set[Position] = set()
-    down: set[Position] = set()
-    right: set[Position] = set()
-    left: set[Position] = set()
-    walls: set[Position] = {Position(-1, 1), Position(height, width - 2)}
-    for row, column in itertools.product(range(height), range(width)):
-        position = Position(row, column)
-        match rows[row][column]:
-            case "#":
-                walls.add(position)
-            case ">":
-                right.add(position)
-            case "v":
-                down.add(position)
-            case "<":
-                left.add(position)
-            case "^":
-                up.add(position)
-    open_spots: list[set[Position]] = []
-    for _ in range(lcm(height - 2, width - 2)):
-        open_spots.append({
-            Position(row, column)
-            for row in range(height)
-            for column in range(width)
-            if (
-                Position(row, column) not in walls and
-                Position(row, column) not in right and
-                Position(row, column) not in down and
-                Position(row, column) not in left and
-                Position(row, column) not in up
-            )
-        })
-        right = move_right(right, width)
-        down = move_down(down, height)
-        left = move_left(left, width)
-        up = move_up(up, height)
-    start = Position(0, 1)
-    end = Position(height - 1, width - 2)
-    return Valley(open_spots, start, end)
-
-
-def move_right(positions: set[Position], width: int) -> set[Position]:
-    new_positions: set[Position] = set()
-    for position in positions:
-        new_position = position + Position(0, 1)
-        if new_position.column > width - 2:
-            new_position = Position(position.row, 1)
-        new_positions.add(new_position)
-    return new_positions
-
-
-def move_down(positions: set[Position], height: int) -> set[Position]:
-    new_positions: set[Position] = set()
-    for position in positions:
-        new_position = position + Position(1, 0)
-        if new_position.row > height - 2:
-            new_position = Position(1, position.column)
-        new_positions.add(new_position)
-    return new_positions
-
-
-def move_left(positions: set[Position], width: int) -> set[Position]:
-    new_positions: set[Position] = set()
-    for position in positions:
-        new_position = position + Position(0, -1)
-        if new_position.column < 1:
-            new_position = Position(position.row, width - 2)
-        new_positions.add(new_position)
-    return new_positions
-
-
-def move_up(positions: set[Position], height: int) -> set[Position]:
-    new_positions: set[Position] = set()
-    for position in positions:
-        new_position = position + Position(-1, 0)
-        if new_position.row < 1:
-            new_position = Position(height - 2, position.column)
-        new_positions.add(new_position)
-    return new_positions
+    return Valley(rows, start, end)
 
 
 class Position:
@@ -120,10 +40,11 @@ class State(NamedTuple):
 
 
 class Valley:
-    def __init__(self, open_spots: list[set[Position]], start: Position, end: Position) -> None:
-        self.open_spots = open_spots
-        self.start = start
-        self.end = end
+    def __init__(self, rows: list[str]) -> None:
+        self.height = len(rows)
+        self.width = len(rows[0])
+        self.start = Position(0, 1)
+        self.end = Position(self.height - 1, self.width - 2)
         self.states: PriorityQueue = PriorityQueue()
         self.seen: set[State] = set()
         self.min_distance: Optional[int] = None
@@ -176,4 +97,14 @@ class Valley:
             self.add_state(State(new_steps, new_position, new_targets))
 
     def is_open_spot(self, steps: int, position: Position) -> bool:
-        return position in self.open_spots[steps % len(self.open_spots)]
+        if position in (self.start, self.end):
+            return True
+        if (position.row == 0 or position.row == self.height - 1
+                or position.column == 0 or position.column == self.width - 1):
+            return False
+        return (
+            self.check_right(steps, position)
+            and self.check_down(steps, position)
+            and self.check_left(steps, position)
+            and self.check_up(steps, position)
+        )
