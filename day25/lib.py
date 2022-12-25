@@ -27,14 +27,14 @@ def from_snafu(snafu: str) -> int:
 
 
 def to_digit(number: int) -> str:
-    for value, represenation in digits:
+    for value, representation in digits:
         if number == value:
-            return represenation
-    raise ValueError(f"{number} cannot be represented asa single SNAFU digit.")
+            return representation
+    raise ValueError(f"{number} cannot be represented as a single SNAFU digit.")
 
 
 def from_digit(digit: str) -> int:
-    for value, represenation in digits:
-        if digit == represenation:
+    for value, representation in digits:
+        if digit == representation:
             return value
     raise ValueError(f"Unknown SNAFU digit {digit}.")
