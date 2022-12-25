@@ -1,13 +1,11 @@
-def part1(rows: list[str]) -> int:
+digits = ((-2, "="), (-1, "-"), (0, "0"), (1, "1"), (2, "2"))
+
+
+def part1(rows: list[str]) -> str:
     return to_snafu(sum(from_snafu(row) for row in rows))
 
 
-def part2(rows: list[str]) -> int:
-    pass
-
-
 def to_snafu(number: int) -> str:
-    digits = {-2: "=", -1: "-", 0: "0", 1: "1", 2: "2"}
     value = number
     snafu = ""
     while value > 0:
@@ -15,15 +13,28 @@ def to_snafu(number: int) -> str:
         if rest > 2:
             rest -= 5
             value += 1
-        snafu = digits[rest] + snafu
+        snafu = to_digit(rest) + snafu
     return snafu
 
 
 def from_snafu(snafu: str) -> int:
-    digits = {"=": -2, "-": -1, "0": 0, "1": 1, "2": 2}
     value = 0
     power = 1
     for digit in snafu[::-1]:
-        value += digits[digit] * power
+        value += from_digit(digit) * power
         power *= 5
     return value
+
+
+def to_digit(number: int) -> str:
+    for value, represenation in digits:
+        if number == value:
+            return represenation
+    raise ValueError(f"{number} cannot be represented asa single SNAFU digit.")
+
+
+def from_digit(digit: str) -> int:
+    for value, represenation in digits:
+        if digit == represenation:
+            return value
+    raise ValueError(f"Unknown SNAFU digit {digit}.")

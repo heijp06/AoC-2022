@@ -15,4 +15,3 @@ example = [
 ]
 
 RESULT1 = "2=-1=0"
-RESULT2 = None
