@@ -1,3 +1,4 @@
+from operator import attrgetter
 from typing import NamedTuple
 from queue import PriorityQueue
 from valve import Valve, build_distance_table
@@ -29,7 +30,7 @@ class Solver:
         print(self.table)
         self.valves = sorted(
             (valve for valve in self.table.keys() if valve.rate > 0),
-            reverse=True)
+            key=attrgetter("rate"), reverse=True)
         self.seen: set[State] = set()
         self.max_pressure = -1
         self.states: PriorityQueue = PriorityQueue()
