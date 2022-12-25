@@ -1,3 +1,4 @@
+import datetime
 from os import getcwd
 from os.path import basename, dirname, join
 import pyperclip    # type: ignore
@@ -22,10 +23,18 @@ def clip(data):
 
 
 rows = list(read_rows())
+t0 = datetime.datetime.now()
 result1 = part1(rows)
+t1 = datetime.datetime.now()
 print(f"Part 1: {result1}")
 clip(result1)
 
+t2 = datetime.datetime.now()
 result2 = part2(rows)
+t3 = datetime.datetime.now()
 print(f"Part 2: {result2}")
 clip(result2)
+
+print(t1 - t0)
+print(t3 - t2)
+print(t1 - t0 + t3 - t2)

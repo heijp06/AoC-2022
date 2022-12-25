@@ -1,12 +1,7 @@
 from __future__ import annotations
 import itertools
-from math import lcm
 from queue import PriorityQueue
 from typing import NamedTuple, Optional
-
-
-def parse(rows: list[str]) -> Valley:
-    return Valley(rows, start, end)
 
 
 class Position:
@@ -39,10 +34,11 @@ class State(NamedTuple):
     targets: tuple[Position, ...]
 
 
-class Valley:
+class Valley:  # pylint: disable=too-many-instance-attributes
     def __init__(self, rows: list[str]) -> None:
         self.height = len(rows)
         self.width = len(rows[0])
+        self.grid = rows
         self.start = Position(0, 1)
         self.end = Position(self.height - 1, self.width - 2)
         self.states: PriorityQueue = PriorityQueue()
@@ -99,12 +95,32 @@ class Valley:
     def is_open_spot(self, steps: int, position: Position) -> bool:
         if position in (self.start, self.end):
             return True
-        if (position.row == 0 or position.row == self.height - 1
-                or position.column == 0 or position.column == self.width - 1):
+        if (position.row <= 0 or position.row >= self.height - 1
+                or position.column <= 0 or position.column >= self.width - 1):
             return False
         return (
-            self.check_right(steps, position)
-            and self.check_down(steps, position)
-            and self.check_left(steps, position)
-            and self.check_up(steps, position)
+            self.check(steps, position, ">") and
+            self.check(steps, position, "v") and
+            self.check(steps, position, "<") and
+            self.check(steps, position, "^")
         )
+
+    def check(self, steps: int, position: Position, blizzard: str) -> bool:
+        match blizzard:
+            case ">":
+                length = self.width - 2
+                column = (position.column - 1 - steps) % length + 1
+                return self.grid[position.row][column] != blizzard
+            case "v":
+                length = self.height - 2
+                row = (position.row - 1 - steps) % length + 1
+                return self.grid[row][position.column] != blizzard
+            case "<":
+                length = self.width - 2
+                column = (position.column - 1 + steps) % length + 1
+                return self.grid[position.row][column] != blizzard
+            case "^":
+                length = self.height - 2
+                row = (position.row - 1 + steps) % length + 1
+                return self.grid[row][position.column] != blizzard
+        raise ValueError(f"Unexpected blizzard '{blizzard}'")
