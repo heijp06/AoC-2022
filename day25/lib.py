@@ -9,11 +9,11 @@ def to_snafu(number: int) -> str:
     value = number
     snafu = ""
     while value > 0:
-        value, rest = divmod(value, 5)
-        if rest > 2:
-            rest -= 5
+        value, digit = divmod(value, 5)
+        if digit > 2:
+            digit -= 5
             value += 1
-        snafu = digits[rest + 2] + snafu
+        snafu = digits[digit + 2] + snafu
     return snafu
 
 
