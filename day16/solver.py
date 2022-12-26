@@ -30,6 +30,10 @@ class Solver:
         self.valves = sorted(
             (valve for valve in self.table.keys() if valve.rate > 0),
             key=attrgetter("rate"), reverse=True)
+        self.valve_wi = next(
+            (valve for valve in self.valves if valve.name == "WI"), None)
+        self.valve_aa = next(
+            valve for valve in self.table.keys() if valve.name == "AA")
         self.seen: set[State] = set()
         self.max_pressure = -1
         self.states: list[tuple[int, State]] = []
@@ -37,24 +41,22 @@ class Solver:
         self.minutes = minutes
 
     def solve(self) -> int:
-        valve_aa = next(valve for valve in self.table.keys()
-                        if valve.name == "AA")
         if self.part == 2:
-            start_state = State(0, frozenset([valve_aa]), [
-                Probe(self.minutes, valve_aa), Probe(self.minutes, valve_aa)])
+            start_state = State(0, frozenset([self.valve_aa]), [
+                Probe(self.minutes, self.valve_aa), Probe(self.minutes, self.valve_aa)])
         else:
-            start_state = State(0, frozenset([valve_aa]), [
-                                Probe(self.minutes, valve_aa)])
+            start_state = State(0, frozenset([self.valve_aa]), [
+                                Probe(self.minutes, self.valve_aa)])
         self.add_state(start_state)
-        # count = 0
+        count = 0
         max_queue_length = 0
         while self.states:
             max_queue_length = max(max_queue_length, len(self.states))
             neg_pressure, state = heapq.heappop(self.states)
-            # count += 1
-            # if count == 1000:
-            #     count = 0
-            #     print(f"{-neg_pressure}, {self.max_pressure}, {self.states.qsize()}")
+            count += 1
+            if count == 1000:
+                count = 0
+                print(f"{self.max_pressure}, {-neg_pressure}, {len(self.states)}")
             if self.max_pressure >= -neg_pressure:
                 break
             for index in range(len(state.probes)):
@@ -94,11 +96,17 @@ class Solver:
         # calculate an upper bound for the amount of pressure that can be generated.
 
         # add the time for all probes together.
-        # assume the cost to get to any node is 2.
+        # assume the minimal cost to an unopened valve.
 
         minutes = sum(probe.minutes for probe in state.probes)
 
-        min_cost = 2
+        # input the edge between AA and WI is the only one with cost 2.
+        if (self.valve_wi and self.valve_wi not in state.opened and
+                self.valve_aa in [probe.valve for probe in state.probes]):
+            min_cost = 2
+        else:
+            min_cost = 3
+
         pressure = state.pressure
 
         valve_index = 0
