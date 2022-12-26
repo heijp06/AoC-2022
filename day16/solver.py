@@ -1,7 +1,6 @@
 import heapq
 from operator import attrgetter
 from typing import Iterable, NamedTuple
-from queue import PriorityQueue
 from valve import Valve, build_distance_table
 
 
