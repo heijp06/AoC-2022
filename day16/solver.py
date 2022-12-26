@@ -1,3 +1,4 @@
+import heapq
 from operator import attrgetter
 from typing import Iterable, NamedTuple
 from queue import PriorityQueue
@@ -31,24 +32,26 @@ class Solver:
         self.valves: list[Valve]
         self.seen: set[State]
         self.max_pressure: int
-        self.states: PriorityQueue
+        self.states: list[tuple[int, State]] = []
 
     def solve(self, valves: Iterable[Valve]) -> int:
         self.valves = sorted(valves, key=attrgetter("rate"), reverse=True)
         self.seen = set()
         self.max_pressure = -1
-        self.states = PriorityQueue()
+        self.states = []
         valve_aa = next(valve for valve in self.table.keys()
                         if valve.name == "AA")
         start_state = State(0, frozenset([valve_aa]), Probe(self.minutes, valve_aa))
         self.add_state(start_state)
         count = 0
-        while not self.states.empty():
-            neg_pressure, state = self.states.get()
+        max_queue_length = 0
+        while self.states:
+            max_queue_length = max(max_queue_length, len(self.states))
+            neg_pressure, state = heapq.heappop(self.states)
             count += 1
             if count == 1000:
                 count = 0
-                print(f"{-neg_pressure}, {self.max_pressure}, {self.states.qsize()}")
+                print(f"{self.max_pressure}, {-neg_pressure}, {len(self.states)}")
             if self.max_pressure >= -neg_pressure:
                 break
             self.create_new_states(state)
@@ -60,7 +63,7 @@ class Solver:
         self.seen.add(state)
         upper_bound = self.upper_bound(state)
         if upper_bound > self.max_pressure:
-            self.states.put((-upper_bound, state))
+            heapq.heappush(self.states, (-upper_bound, state))
 
     def create_new_states(self, state: State) -> None:
         for new_valve in self.valves:
@@ -82,7 +85,6 @@ class Solver:
         # assume the cost to get to any node is 2.
 
         minutes = state.probe.minutes
-
         min_cost = 2
         pressure = state.pressure
 
