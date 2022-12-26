@@ -1,6 +1,6 @@
+import heapq
 from operator import attrgetter
 from typing import NamedTuple
-from queue import PriorityQueue
 from valve import Valve, build_distance_table
 
 
@@ -27,13 +27,12 @@ class State(NamedTuple):
 class Solver:
     def __init__(self, rows: list[str], part: int = 2, minutes: int = 26) -> None:
         self.table = build_distance_table(rows)
-        print(self.table)
         self.valves = sorted(
             (valve for valve in self.table.keys() if valve.rate > 0),
             key=attrgetter("rate"), reverse=True)
         self.seen: set[State] = set()
         self.max_pressure = -1
-        self.states: PriorityQueue = PriorityQueue()
+        self.states: list[tuple[int, State]] = []
         self.part = part
         self.minutes = minutes
 
@@ -47,17 +46,20 @@ class Solver:
             start_state = State(0, frozenset([valve_aa]), [
                                 Probe(self.minutes, valve_aa)])
         self.add_state(start_state)
-        count = 0
-        while not self.states.empty():
-            neg_pressure, state = self.states.get()
-            count += 1
-            if count == 1000:
-                count = 0
-                print(f"{-neg_pressure}, {self.max_pressure}, {self.states.qsize()}")
+        # count = 0
+        max_queue_length = 0
+        while self.states:
+            max_queue_length = max(max_queue_length, len(self.states))
+            neg_pressure, state = heapq.heappop(self.states)
+            # count += 1
+            # if count == 1000:
+            #     count = 0
+            #     print(f"{-neg_pressure}, {self.max_pressure}, {self.states.qsize()}")
             if self.max_pressure >= -neg_pressure:
                 break
             for index in range(len(state.probes)):
                 self.create_new_states(state, index)
+        print(max_queue_length)
         return self.max_pressure
 
     def add_state(self, state: State):
@@ -66,7 +68,7 @@ class Solver:
         self.seen.add(state)
         upper_bound = self.upper_bound(state)
         if upper_bound > self.max_pressure:
-            self.states.put((-upper_bound, state))
+            heapq.heappush(self.states, (-upper_bound, state))
 
     def create_new_states(self, state: State, index: int) -> None:
         probe = state.probes[index]
