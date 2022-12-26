@@ -3,13 +3,14 @@ import itertools
 
 
 digits = ["=", "-", "0", "1", "2"]
+SNAFU = str
 
 
-def part1(rows: list[str]) -> str:
+def part1(rows: list[SNAFU]) -> SNAFU:
     return functools.reduce(add, rows, "0")
 
 
-def add(snafu1: str, snafu2: str) -> str:
+def add(snafu1: SNAFU, snafu2: SNAFU) -> SNAFU:
     result = ""
     carry = 0
     for digit1, digit2 in itertools.zip_longest(snafu1[::-1], snafu2[::-1], fillvalue="0"):
