@@ -15,7 +15,6 @@ def part2(rows: list[str]) -> int:
     valves = get_valves(solver)
     max_pressure = -1
     for count in range(len(valves) // 2 + 1):
-        print(count)
         for valves_probe1 in itertools.combinations(valves, count):
             valves_probe2 = [
                 valve for valve in valves if valve not in valves_probe1]
