@@ -43,13 +43,8 @@ class Solver:
         start_state = State(0, frozenset(
             [valve_aa]), Probe(self.minutes, valve_aa))
         self.add_state(start_state)
-        count = 0
         while self.states:
             neg_pressure, _, state = heapq.heappop(self.states)
-            count += 1
-            if count == 1000:
-                count = 0
-                print(f"{self.max_pressure}, {-neg_pressure}, {len(self.states)}")
             if self.max_pressure >= -neg_pressure:
                 break
             self.create_new_states(state)
