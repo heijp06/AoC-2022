@@ -1,7 +1,7 @@
 from __future__ import annotations
+import heapq
 import re
 from typing import NamedTuple, Optional
-from queue import PriorityQueue
 
 
 def parse(row: str) -> Factory:
@@ -61,13 +61,13 @@ class Factory:
         self.max_geodes = -1
         self.seen: set[State] = set()
         self.max_time = 24
-        self.states: PriorityQueue = PriorityQueue()
+        self.states: list[tuple[int, State]]
 
     def build(self) -> None:
-        self.states = PriorityQueue()
+        self.states = []
         self.add_state(self.start_state)
-        while self.states.qsize():
-            neg_upper_bound, state = self.states.get()
+        while self.states:
+            neg_upper_bound, state = heapq.heappop(self.states)
             if self.max_geodes >= -neg_upper_bound:
                 break
             self.next_states(state)
@@ -76,7 +76,7 @@ class Factory:
         if state in self.seen:
             return
         self.seen.add(state)
-        self.states.put((-self.upper_bound(state), state))
+        heapq.heappush(self.states, (-self.upper_bound(state), state))
 
     def next_states(self, state: State) -> None:
         # increase time
