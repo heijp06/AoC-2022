@@ -61,13 +61,13 @@ class Factory:
         self.max_geodes = -1
         self.seen: set[State] = set()
         self.max_time = 24
-        self.states: list[tuple[int, State]]
+        self.states: list[tuple[int, int, State]]
 
     def build(self) -> None:
         self.states = []
         self.add_state(self.start_state)
         while self.states:
-            neg_upper_bound, state = heapq.heappop(self.states)
+            neg_upper_bound, _, state = heapq.heappop(self.states)
             if self.max_geodes >= -neg_upper_bound:
                 break
             self.next_states(state)
@@ -76,7 +76,7 @@ class Factory:
         if state in self.seen:
             return
         self.seen.add(state)
-        heapq.heappush(self.states, (-self.upper_bound(state), state))
+        heapq.heappush(self.states, (-self.upper_bound(state), -state.time, state))
 
     def next_states(self, state: State) -> None:
         # increase time
