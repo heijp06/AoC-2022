@@ -31,7 +31,9 @@ class Solver:
         self.valves: list[Valve]
         self.seen: set[State]
         self.max_pressure: int
-        self.states: list[tuple[int, State]] = []
+        self.states: list[tuple[int, int, State]] = []
+        # See: https://en.wikipedia.org/wiki/A*_search_algorithm#Implementation_details
+        self.tie_breaker = 0
 
     def solve(self, valves: Iterable[Valve]) -> int:
         self.valves = sorted(valves, key=attrgetter("rate"), reverse=True)
@@ -40,13 +42,12 @@ class Solver:
         self.states = []
         valve_aa = next(valve for valve in self.table.keys()
                         if valve.name == "AA")
-        start_state = State(0, frozenset([valve_aa]), Probe(self.minutes, valve_aa))
+        start_state = State(0, frozenset(
+            [valve_aa]), Probe(self.minutes, valve_aa))
         self.add_state(start_state)
         count = 0
-        max_queue_length = 0
         while self.states:
-            max_queue_length = max(max_queue_length, len(self.states))
-            neg_pressure, state = heapq.heappop(self.states)
+            neg_pressure, _, state = heapq.heappop(self.states)
             count += 1
             if count == 1000:
                 count = 0
@@ -62,7 +63,9 @@ class Solver:
         self.seen.add(state)
         upper_bound = self.upper_bound(state)
         if upper_bound > self.max_pressure:
-            heapq.heappush(self.states, (-upper_bound, state))
+            self.tie_breaker -= 1
+            heapq.heappush(
+                self.states, (-upper_bound, self.tie_breaker, state))
 
     def create_new_states(self, state: State) -> None:
         for new_valve in self.valves:
